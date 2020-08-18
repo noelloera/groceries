@@ -12,11 +12,7 @@ export default class App extends React.Component {
     return (
       <div className="App">
         <h1>This is The App</h1>
-        <SplashScreen />
-        <LogIn />
         <ItemLists />
-        <Items />
-        <Editor />
       </div>
     );
   }
