@@ -1,6 +1,6 @@
 import React from "react";
 import "./ItemLists.css";
-import Items from "../Items/Items.js"
+import Items from "../Items/Items.js";
 
 let lists = {
   _id: 1,
@@ -71,30 +71,38 @@ export default class ItemLists extends React.Component {
     super(props);
     this.state = {
       //When implementing actual object use the "first" array object position
-      loaded: false,
-      currentListId: 1,
-      userLists:lists,
+      mounted: false,
+      currentListId: 3,
+      userLists: [],
     };
     this.renderLists = this.renderLists.bind(this);
     this.renderItems = this.renderItems.bind(this);
-
-    //this.loadList = this.loadList.bind(this);
-  }
-  /*loadList(list) {
-    this.setState({ currentListId: list._id });
-  }*/
-
-  componentDidMount(){
-      this.setState({
-          loaded: true,
-          userLists:lists})
+    this.handleListClick = this.handleListClick.bind(this);
   }
 
+  //Will be the method to retrieve data
+  componentDidMount() {
+    this.setState({
+      mounted: true,
+      userLists: lists.allLists,
+    });
+  }
+
+  handleListClick(id, e) {
+    this.setState({
+      currentListId: id,
+    });
+  }
+
+  //Renders each of the lists with their names
   renderLists() {
-    if (this.state.loaded) {
-      return this.state.userLists.allLists.map((list) => {
-          console.log(list)
-        return <li key={list._id}>{list.name}</li>;
+    if (this.state.userLists && this.state.mounted) {
+      return this.state.userLists.map((list) => {
+        return (
+          <li onClick={(e) => this.handleListClick(list._id, e)} key={list._id}>
+            {list.name}
+          </li>
+        );
       });
     } else {
       return <li>There are no saved lists tap (+) to add one</li>;
@@ -102,14 +110,13 @@ export default class ItemLists extends React.Component {
   }
 
   renderItems() {
-    if (this.state.loaded) {
-      this.state.userLists.allLists.map((listObj) => {
+    if (this.state.userLists && this.state.mounted) {
+      return this.state.userLists.map((listObj) => {
         if (listObj._id === this.state.currentListId) {
-          listObj.items.map((item) => {
+          return listObj.items.map((item) => {
+            console.log(item.value);
             return <li key={item._id}>{item.value}</li>;
           });
-        } else {
-          return <li>No Items</li>;
         }
       });
     } else {
@@ -121,11 +128,9 @@ export default class ItemLists extends React.Component {
     //Should map the item lists, as well as handle methods for lists
     return (
       <div>
-        <ul lists={this.state.userLists}>{this.state.userLists.allLists.map(list=>{
-            console.log(list)
-        return <li>{list.name}</li>
-        })}</ul>
-        <Items lists={this.state.userLists}/>
+        <h1>LISTS:</h1>
+        <ul>{this.renderLists()}</ul>
+        <Items renderItems={this.renderItems} />
       </div>
     );
   }

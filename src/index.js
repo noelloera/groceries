@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './Components/App/App.js'
 import * as serviceWorker from './serviceWorker';
-
+//Remove the StrictMode to view actual rendered content
 ReactDOM.render(
   <React.StrictMode>
     <App />
