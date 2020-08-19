@@ -11,7 +11,7 @@ export default class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <h1>This is The App</h1>
+        <h1>Grocery List</h1>
         <ItemLists />
       </div>
     );

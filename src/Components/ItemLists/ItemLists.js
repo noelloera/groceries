@@ -72,7 +72,7 @@ export default class ItemLists extends React.Component {
     this.state = {
       //When implementing actual object use the "first" array object position
       mounted: false,
-      currentListId: 3,
+      currentListId: 1,
       userLists: [],
     };
     this.renderLists = this.renderLists.bind(this);
@@ -87,8 +87,8 @@ export default class ItemLists extends React.Component {
       userLists: lists.allLists,
     });
   }
-
-  handleListClick(id, e) {
+  //Handler for when a list is clicked
+  handleListClick(id) {
     this.setState({
       currentListId: id,
     });
@@ -96,11 +96,16 @@ export default class ItemLists extends React.Component {
 
   //Renders each of the lists with their names
   renderLists() {
-    if (this.state.userLists && this.state.mounted) {
-      return this.state.userLists.map((list) => {
+    const allLists = this.state.userLists;
+    if (allLists !== undefined && allLists.length !== 0 && this.state.mounted) {
+      //The onClick event needs to trigger the handler function
+      return this.state.userLists.map((currentList) => {
         return (
-          <li onClick={(e) => this.handleListClick(list._id, e)} key={list._id}>
-            {list.name}
+          <li
+            onClick={(e) => this.handleListClick(currentList._id)}
+            key={currentList._id}
+          >
+            {currentList.name}
           </li>
         );
       });
@@ -110,11 +115,11 @@ export default class ItemLists extends React.Component {
   }
 
   renderItems() {
-    if (this.state.userLists && this.state.mounted) {
-      return this.state.userLists.map((listObj) => {
-        if (listObj._id === this.state.currentListId) {
-          return listObj.items.map((item) => {
-            console.log(item.value);
+    const allLists = this.state.userLists;
+    if (allLists !== undefined && allLists.length !== 0 && this.state.mounted) {
+      return allLists.map((currentList) => {
+        if (currentList._id === this.state.currentListId) {
+          return currentList.items.map((item) => {
             return <li key={item._id}>{item.value}</li>;
           });
         }
