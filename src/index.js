@@ -5,9 +5,7 @@ import App from './Components/App/App.js'
 import * as serviceWorker from './serviceWorker';
 //Remove the StrictMode to view actual rendered content
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+    <App />,
   document.getElementById('root')
 );
 

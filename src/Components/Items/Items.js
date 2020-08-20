@@ -1,12 +1,29 @@
 import React from "react";
 import "./Items.css";
 
-export default function Items(props) {
+export default class Items extends React.Component {
+    constructor(props){
+        super(props);
+        this.itemInput = React.createRef();
+        this.focusItemInput = this.focusItemInput.bind(this)
+    }
+    focusItemInput(e){
+        this.itemInput.current.focus();
+      }
   //Should map the items within the lists
-  return (
-    <div className="Items">
-      <h1>Items:</h1>
-      <ul className="Items-List">{props.renderItems()}</ul>
-    </div>
-  );
+  render() {
+    return (
+      <div className="Items">
+        <h1>Items:</h1>
+        <button onClick={(e) => this.focusItemInput(e)}>+</button>
+        <ul className="Items-List">{this.props.renderItems()}</ul>
+        <form onSubmit={(e)=>{
+            this.props.handleNewItem(e,this.itemInput.current.value)
+            this.itemInput.current.value = null;
+        }}>
+            <input ref={this.itemInput}></input>
+        </form>
+      </div>
+    );
+  }
 }
