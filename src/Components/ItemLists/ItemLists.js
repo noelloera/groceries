@@ -1,6 +1,7 @@
 import React from "react";
 import "./ItemLists.css";
 import Items from "../Items/Items.js";
+import { findAllByRole } from "@testing-library/react";
 
 let lists = {
   _id: 1,
@@ -82,13 +83,14 @@ export default class ItemLists extends React.Component {
     this.focusListInput = this.focusListInput.bind(this);
     this.handleNewList = this.handleNewList.bind(this);
     this.handleNewItem = this.handleNewItem.bind(this);
+    this.itemClick = this.itemClick.bind(this);
   }
 
   //Will be the method to retrieve data
   componentDidMount() {
     this.setState({
       mounted: true,
-      userLists: lists.allLists,
+      userLists: lists.allLists.slice(),
     });
   }
 
@@ -99,14 +101,15 @@ export default class ItemLists extends React.Component {
     });
   }
 
+  //Sets new State and changes to new List
   handleNewList(e) {
     e.preventDefault();
     const listName = this.listInput.current.value;
     if (listName) {
-      let updateLists = lists.allLists;
+      let updateLists = this.state.userLists.slice();
       const newListObject = {
         name: listName,
-        _id: lists.allLists.length + 1,
+        _id: updateLists.length + 1,
         items: [],
       };
       updateLists.push(newListObject);
@@ -115,45 +118,62 @@ export default class ItemLists extends React.Component {
         userLists: updateLists,
       });
       this.listInput.current.value = null;
-      console.log(newListObject);
     } else {
-      alert("Must enter a value");
+      alert("Must enter a list name");
     }
   }
 
+  //New Item Handlers and helper function
   handleNewItem(e, item) {
     e.preventDefault();
     if (item) {
-      const allLists = this.state.userLists;
-      let items = [];
-      allLists.forEach((list) => {
-        if (list._id === this.state.currentListId) {
-          items = list.items;
-          const newItemObject = {
-            value: item,
-            _id: items.length + 1,
-          };
-          items.push(newItemObject);
-        }
-        this.setState({
-          userLists: allLists,
-        });
+      let allLists = this.addItemToList(item);
+      this.setState({
+        userLists: allLists,
       });
     } else {
-      alert("Must enter a value");
+      alert("Must enter an item name");
     }
   }
+  addItemToList(item) {
+    const allLists = this.state.userLists.slice();
+    allLists.forEach((list) => {
+      if (list._id === this.state.currentListId) {
+        if (item) {
+          let newItem = { _id: list.items.length + 1, value: item };
+          list.items.push(newItem);
+        }
+      }
+    });
+    return allLists;
+  }
+  itemClick(e, id) {
+    e.preventDefault();
+    const allLists = this.state.userLists.slice();
+    allLists.forEach((list) => {
+      if (list._id === this.state.currentListId) {
+        list.items.forEach((item,index)=>{
+          if(item._id===id){
+            list.items.splice(0,index)
+          }
+        })
+      }
+    });
+    console.log(allLists);
+    this.setState({ userLists: allLists });
+  }
 
+  //Focuses on input Element
   focusListInput(e) {
     this.listInput.current.focus();
   }
 
   //Renders each of the lists with their names
   renderLists() {
-    const allLists = this.state.userLists;
+    const allLists = this.state.userLists.slice();
     if (allLists !== undefined && allLists.length !== 0 && this.state.mounted) {
       //The onClick event needs to trigger the handler function
-      return this.state.userLists.map((currentList) => {
+      return allLists.map((currentList) => {
         return (
           <li
             onClick={(e) => this.handleListClick(currentList._id)}
@@ -170,7 +190,7 @@ export default class ItemLists extends React.Component {
 
   renderItems() {
     let items = [];
-    const allLists = this.state.userLists;
+    const allLists = this.state.userLists.slice();
     allLists.forEach((list) => {
       if (list._id === this.state.currentListId) {
         items = list.items;
@@ -178,7 +198,16 @@ export default class ItemLists extends React.Component {
     });
     if (items.length !== 0) {
       return items.map((item) => {
-        return <li key={item._id}>{item.value}</li>;
+        return (
+          <li
+            onClick={(e) => {
+              this.itemClick(e, item._id);
+            }}
+            key={item._id}
+          >
+            {item.value}
+          </li>
+        );
       });
     } else {
       return <li>no items</li>;
