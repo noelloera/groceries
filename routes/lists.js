@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 //Database
+const { connect, disconnect } = require("../database/database");
+const List = require("../database/models/list-schema");
+const mongoose = require("mongoose");
 let lists = {
   _id: 1,
   allLists: [
@@ -65,11 +68,61 @@ let lists = {
   ],
 };
 
-router.get("/lists", (req, res) => {
-  //Later a connection to the db should replace this (error handler)
-  res.status(200).send(lists);
+router.get("/lists/", (req, res) => {
+  //Later, should only send if the log in was successful
+  connect();
+  List.find((error, lists) => {
+    if (error) {
+      res.status(500).send({
+        message: "Cannot retrieve Objects",
+        error: error,
+      });
+      disconnect();
+    } else {
+      res.status(200).send({
+        message: "Found Objects",
+        lists: lists,
+      });
+      disconnect();
+    }
+  });
 });
 
+//Use a get for an individual id list to understand how to override the list
+
+router.post("/lists/", (req, res) => {
+  const name = req.body.name;
+  if (name && name !== "") {
+    connect();
+    const newList = new List({
+      name: name,
+      _id: new mongoose.Types.ObjectId(),
+      items: [],
+    });
+    newList.save((error, list) => {
+      if (error || !list) {
+        res.status(422).send({
+          message: "cannot create: invalid list name",
+        });
+        disconnect();
+      } else {
+        res.status(201).send({
+          message: "successully created list",
+          list: list,
+        });
+        disconnect();
+      }
+    });
+  } else {
+    res.status(422).send({
+      message: "cannot create: invalid list name",
+    });
+  }
+});
+
+//Create the put methods to update the existing list by searchin and updating its contents
+
+/*
 router.get("/lists/:listId", (req, res) => {
   const allLists = lists.allLists;
   if (allLists !== undefined && allLists.length !== 0) {
@@ -96,4 +149,6 @@ router.post("/lists/",(req,res)=>{
             createdObject: req.body
         })
     }
-})
+})*/
+
+module.exports = router;

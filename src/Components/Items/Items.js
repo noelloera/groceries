@@ -18,7 +18,6 @@ export default class Items extends React.Component {
     this.itemInput.current.focus();
   }
 
-
   //Render:
   render() {
     return (

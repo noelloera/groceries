@@ -224,8 +224,7 @@ export default class ItemLists extends React.Component {
             }}
           ></input>
         </form>
-        <Items 
-        newItem={this.newItem} renderItems={this.renderItems} />
+        <Items newItem={this.newItem} renderItems={this.renderItems} />
       </div>
     );
   }
