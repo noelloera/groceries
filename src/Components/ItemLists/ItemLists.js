@@ -70,113 +70,107 @@ let lists = {
 export default class ItemLists extends React.Component {
   constructor(props) {
     super(props);
+    //State values:
     this.state = {
-      //When implementing actual object use the "first" array object position
+      input: "",
       mounted: false,
       currentListId: 1,
       userLists: [],
     };
+    //Element references
     this.listInput = React.createRef();
+    //Method Binding:
     this.renderLists = this.renderLists.bind(this);
     this.renderItems = this.renderItems.bind(this);
-    this.handleListClick = this.handleListClick.bind(this);
-    this.focusListInput = this.focusListInput.bind(this);
-    this.handleNewList = this.handleNewList.bind(this);
-    this.handleNewItem = this.handleNewItem.bind(this);
+    this.listClick = this.listClick.bind(this);
     this.itemClick = this.itemClick.bind(this);
+    this.focus = this.focus.bind(this);
+    this.newList = this.newList.bind(this);
+    this.newItem = this.newItem.bind(this);
   }
 
-  //Will be the method to retrieve data
+  //Hooks
   componentDidMount() {
     this.setState({
       mounted: true,
       userLists: lists.allLists.slice(),
     });
   }
-
-  //Handler for when a list is clicked
-  handleListClick(id) {
+  //Methods
+  listClick(id) {
     this.setState({
       currentListId: id,
     });
   }
 
-  //Sets new State and changes to new List
-  handleNewList(e) {
+  newList(e) {
     e.preventDefault();
-    const listName = this.listInput.current.value;
+    const listName = this.state.input.slice();
     if (listName) {
-      let updateLists = this.state.userLists.slice();
+      const oldLists = this.state.userLists.slice();
       const newListObject = {
         name: listName,
-        _id: updateLists.length + 1,
+        //replace IDs with new MongoDB id's
+        _id: oldLists.length + 1,
         items: [],
       };
-      updateLists.push(newListObject);
+      oldLists.push(newListObject);
       this.setState({
         currentListId: newListObject._id,
-        userLists: updateLists,
+        userLists: oldLists,
       });
-      this.listInput.current.value = null;
+      this.setState({ input: "" });
     } else {
       alert("Must enter a list name");
     }
   }
 
-  //New Item Handlers and helper function
-  handleNewItem(e, item) {
+  newItem(e, item) {
     e.preventDefault();
     if (item) {
-      let allLists = this.addItemToList(item);
+      let allLists = this.state.userLists.slice();
+      allLists.forEach((list) => {
+        if (list._id === this.state.currentListId) {
+          let newItem = { _id: list.items.length + 1, value: item };
+          list.items.push(newItem);
+        }
+      });
       this.setState({
         userLists: allLists,
       });
     } else {
-      alert("Must enter an item name");
+      alert("Must enter an item name" + item);
     }
   }
-  addItemToList(item) {
-    const allLists = this.state.userLists.slice();
-    allLists.forEach((list) => {
-      if (list._id === this.state.currentListId) {
-        if (item) {
-          let newItem = { _id: list.items.length + 1, value: item };
-          list.items.push(newItem);
-        }
-      }
-    });
-    return allLists;
-  }
+
   itemClick(e, id) {
     e.preventDefault();
     const allLists = this.state.userLists.slice();
     allLists.forEach((list) => {
       if (list._id === this.state.currentListId) {
-        list.items.forEach((item,index)=>{
-          if(item._id===id){
-            list.items.splice(0,index)
+        list.items.forEach((item, index) => {
+          if (item._id === id) {
+            list.items.splice(index, 1);
           }
-        })
+        });
       }
     });
     console.log(allLists);
     this.setState({ userLists: allLists });
   }
 
-  //Focuses on input Element
-  focusListInput(e) {
+  focus(e) {
     this.listInput.current.focus();
   }
 
-  //Renders each of the lists with their names
+  //Rendering Methods
   renderLists() {
     const allLists = this.state.userLists.slice();
     if (allLists !== undefined && allLists.length !== 0 && this.state.mounted) {
-      //The onClick event needs to trigger the handler function
       return allLists.map((currentList) => {
         return (
           <li
-            onClick={(e) => this.handleListClick(currentList._id)}
+            onClick={(e) => this.listClick(currentList._id)}
             key={currentList._id}
           >
             {currentList.name}
@@ -219,15 +213,19 @@ export default class ItemLists extends React.Component {
     return (
       <div>
         <h1>Lists:</h1>
-        <button onClick={(e) => this.focusListInput(e)}>+</button>
+        <button onClick={(e) => this.focus(e)}>+</button>
         <ul>{this.renderLists()}</ul>
-        <form onSubmit={(e) => this.handleNewList(e)}>
-          <input ref={this.listInput}></input>
+        <form onSubmit={(e) => this.newList(e)}>
+          <input
+            ref={this.listInput}
+            value={this.state.input}
+            onChange={(e) => {
+              this.setState({ input: e.target.value });
+            }}
+          ></input>
         </form>
-        <Items
-          handleNewItem={this.handleNewItem}
-          renderItems={this.renderItems}
-        />
+        <Items 
+        newItem={this.newItem} renderItems={this.renderItems} />
       </div>
     );
   }

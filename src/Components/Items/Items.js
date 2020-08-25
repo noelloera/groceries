@@ -4,26 +4,42 @@ import "./Items.css";
 export default class Items extends React.Component {
   constructor(props) {
     super(props);
+    //State must contain the values reflected in the elements
+    this.state = {
+      input: "",
+    };
+    //Element references
     this.itemInput = React.createRef();
-    this.focusItemInput = this.focusItemInput.bind(this);
+    //Method Binding:
+    this.focus = this.focus.bind(this);
   }
-  focusItemInput(e) {
+  //Methods:
+  focus(e) {
     this.itemInput.current.focus();
   }
-  //Should map the items within the lists
+
+
+  //Render:
   render() {
     return (
       <div className="Items">
         <h1>Items:</h1>
-        <button onClick={(e) => this.focusItemInput(e)}>+</button>
+        <button onClick={(e) => this.focus(e)}>+</button>
         <ul className="Items-List">{this.props.renderItems()}</ul>
         <form
           onSubmit={(e) => {
-            this.props.handleNewItem(e, this.itemInput.current.value);
-            this.itemInput.current.value = null;
+            console.log(this.state.input);
+            this.props.newItem(e, this.state.input.slice());
+            this.setState({ input: "" });
           }}
         >
-          <input ref={this.itemInput}></input>
+          <input
+            ref={this.itemInput}
+            value={this.state.input}
+            onChange={(e) => {
+              this.setState({ input: e.target.value });
+            }}
+          ></input>
         </form>
       </div>
     );
