@@ -44,13 +44,14 @@ export default class ItemLists extends React.Component {
       }
     } catch (error) {
       console.log(error);
-      throw error;
+      //Keeps refreshing until it works but needs to produce a message later in the app
+      window.location = "/"
     }
   }
 
   componentDidMount() {
     this.getLists();
-    this.interval = setInterval(this.getLists, 5000);
+    this.interval = setInterval(this.getLists, 10000);
   }
   componentWillUnmount() {
     clearInterval(this.interval);
@@ -82,7 +83,7 @@ export default class ItemLists extends React.Component {
         };
         const response = await (await fetch(dev, options)).json();
         const oldLists = this.state.userLists.slice();
-        const newListObject = response.list
+        const newListObject = response.list;
         oldLists.push(newListObject);
         this.setState({
           currentListId: newListObject._id,
@@ -97,19 +98,37 @@ export default class ItemLists extends React.Component {
     }
   }
 
-  newItem(e, item) {
+  async newItem(e, item) {
     e.preventDefault();
     if (item) {
-      let allLists = this.state.userLists.slice();
-      allLists.forEach((list) => {
-        if (list._id === this.state.currentListId) {
-          let newItem = { _id: list.items.length + 1, value: item };
-          list.items.push(newItem);
-        }
-      });
-      this.setState({
-        userLists: allLists,
-      });
+      try {
+        let allLists = this.state.userLists.slice();
+        allLists.forEach(async (list) => {
+          if (list._id === this.state.currentListId) {
+            let newItem = {
+              _id: mongoose.Types.ObjectId(),
+              value: item};
+            list.items.push(newItem);
+            console.log(list)
+            const options = {
+              method: "PUT",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({list}),
+            };
+            let response = await(await fetch(dev+list._id, options)).json()
+            console.log(response)
+          }
+        });
+        this.setState({
+          userLists: allLists,
+        });
+      } catch (error) {
+        console.log(error);
+        alert(error);
+      }
     } else {
       alert("Must enter an item name" + item);
     }

@@ -27,7 +27,6 @@ export default class Items extends React.Component {
         <ul className="Items-List">{this.props.renderItems()}</ul>
         <form
           onSubmit={(e) => {
-            console.log(this.state.input);
             this.props.newItem(e, this.state.input.slice());
             this.setState({ input: "" });
           }}

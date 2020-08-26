@@ -55,7 +55,7 @@ router.get("/lists/:listId", (req, res) => {
 //POST
 router.post("/lists/", (req, res) => {
   const name = req.body.name;
-  const id = req.body.id
+  const id = req.body.id;
   if (name && name !== "") {
     connect();
     const newList = new List({
@@ -84,30 +84,32 @@ router.post("/lists/", (req, res) => {
   }
 });
 
-//PUT
-router.put("/lists/listId", (req, res) => {
+//Disconnect from DB is not working
+router.put("/lists/:listId", (req, res) => {
   const id = req.params.listId;
-  const updatedList = req.body.list;
-  if(id&&id!==""&& updatedList){
-    List.findByIdAndUpdate(id,updatedList,(error,list)=>{
-      if(error|| !list){
+  const list = req.body.list;
+  if (list && id) {
+    List.findByIdAndUpdate(id, list, (error, list) => {
+      if (error || !list) {
         res.status(422).send({
-          message: "unable to update: request error"
-        })
+          message: "unable to update: request error",
+        });
+        disconnect();
         res.status(200).send({
           message: "successfully updated list",
-          list: updatedList
-        })
+          list: newList,
+        });
+        disconnect();
       }
-    })
-  }else{
+    });
+  } else {
     res.send(404).send({
-      message: "unable to update: invalid object/id"
-    })
+      message: "unable to update: invalid object/id",
+    });
+    disconnect();
   }
 });
 
-//DELETE when it is needed after popup implementation 
-
+//DELETE when it is needed after popup implementation
 
 module.exports = router;
