@@ -1,71 +1,11 @@
 import React from "react";
 import "./ItemLists.css";
 import Items from "../Items/Items.js";
-import { findAllByRole } from "@testing-library/react";
+import { findAllByRole, findAllByLabelText } from "@testing-library/react";
+const mongoose = require("mongoose");
 
-let lists = {
-  _id: 1,
-  allLists: [
-    {
-      name: "kitchen",
-      _id: 1,
-      items: [
-        {
-          _id: 1,
-          value: "apples",
-        },
-        {
-          _id: 2,
-          value: "bananas",
-        },
-        {
-          _id: 3,
-          value: "strawberries",
-        },
-        {
-          _id: 4,
-          value: "watermelon",
-        },
-      ],
-    },
-    {
-      name: "cookout",
-      _id: 2,
-      items: [
-        {
-          _id: 1,
-          value: "steak",
-        },
-        {
-          _id: 2,
-          value: "ham",
-        },
-        {
-          _id: 3,
-          value: "cheese",
-        },
-      ],
-    },
-    {
-      name: "bathroom",
-      _id: 3,
-      items: [
-        {
-          _id: 1,
-          value: "shampoo",
-        },
-        {
-          _id: 2,
-          value: "hairspray",
-        },
-        {
-          _id: 3,
-          value: "loofa",
-        },
-      ],
-    },
-  ],
-};
+const dev = "http://localhost:5000/lists/";
+const production = "/lists/";
 
 export default class ItemLists extends React.Component {
   constructor(props) {
@@ -87,15 +27,35 @@ export default class ItemLists extends React.Component {
     this.focus = this.focus.bind(this);
     this.newList = this.newList.bind(this);
     this.newItem = this.newItem.bind(this);
+    this.getLists = this.getLists.bind(this);
   }
 
   //Hooks
-  componentDidMount() {
-    this.setState({
-      mounted: true,
-      userLists: lists.allLists.slice(),
-    });
+  async getLists() {
+    try {
+      let response = await (await fetch(dev)).json();
+      if (response) {
+        //good place to remove the CSS loading element
+        if (!response.lists == this.state.userLists) console.log(response);
+        this.setState({
+          mounted: true,
+          userLists: response.lists,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
+
+  componentDidMount() {
+    this.getLists();
+    this.interval = setInterval(this.getLists, 5000);
+  }
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
   //Methods
   listClick(id) {
     this.setState({
@@ -103,23 +63,35 @@ export default class ItemLists extends React.Component {
     });
   }
 
-  newList(e) {
+  async newList(e) {
     e.preventDefault();
     const listName = this.state.input.slice();
     if (listName) {
-      const oldLists = this.state.userLists.slice();
-      const newListObject = {
-        name: listName,
-        //replace IDs with new MongoDB id's
-        _id: oldLists.length + 1,
-        items: [],
-      };
-      oldLists.push(newListObject);
-      this.setState({
-        currentListId: newListObject._id,
-        userLists: oldLists,
-      });
-      this.setState({ input: "" });
+      try {
+        const newList = {
+          name: listName,
+          _id: new mongoose.Types.ObjectId(),
+        };
+        const options = {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newList),
+        };
+        const response = await (await fetch(dev, options)).json();
+        const oldLists = this.state.userLists.slice();
+        const newListObject = response.list
+        oldLists.push(newListObject);
+        this.setState({
+          currentListId: newListObject._id,
+          userLists: oldLists,
+        });
+        this.setState({ input: "" });
+      } catch (error) {
+        alert(error);
+      }
     } else {
       alert("Must enter a list name");
     }
