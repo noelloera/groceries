@@ -14,7 +14,7 @@ export default class ItemLists extends React.Component {
     this.state = {
       input: "",
       mounted: false,
-      currentListId: 1,
+      currentListId: null,
       userLists: [],
     };
     //Element references
@@ -33,25 +33,29 @@ export default class ItemLists extends React.Component {
   //Hooks
   async getLists() {
     try {
-      let response = await (await fetch(dev)).json();
+      let response = await (await fetch(production)).json();
       if (response) {
         //good place to remove the CSS loading element
         if (!response.lists == this.state.userLists) console.log(response);
         this.setState({
           mounted: true,
           userLists: response.lists,
+          currentListId: this.state.currentListId
         });
+        if(!this.state.currentListId){
+          this.setState({currentListId: response.lists[0]._id})
+        }
       }
     } catch (error) {
       console.log(error);
       //Keeps refreshing until it works but needs to produce a message later in the app
-      window.location = "/"
+      window.location = "/";
     }
   }
 
   componentDidMount() {
     this.getLists();
-    this.interval = setInterval(this.getLists, 10000);
+    this.interval = setInterval(this.getLists, 5000);
   }
   componentWillUnmount() {
     clearInterval(this.interval);
@@ -81,7 +85,7 @@ export default class ItemLists extends React.Component {
           },
           body: JSON.stringify(newList),
         };
-        const response = await (await fetch(dev, options)).json();
+        const response = await (await fetch(production, options)).json();
         const oldLists = this.state.userLists.slice();
         const newListObject = response.list;
         oldLists.push(newListObject);
@@ -98,6 +102,7 @@ export default class ItemLists extends React.Component {
     }
   }
 
+  //Fix new Item Fetch
   async newItem(e, item) {
     e.preventDefault();
     if (item) {
@@ -105,21 +110,19 @@ export default class ItemLists extends React.Component {
         let allLists = this.state.userLists.slice();
         allLists.forEach(async (list) => {
           if (list._id === this.state.currentListId) {
-            let newItem = {
-              _id: mongoose.Types.ObjectId(),
-              value: item};
-            list.items.push(newItem);
-            console.log(list)
+            list.items.push({value: item});
             const options = {
               method: "PUT",
               headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({list}),
+              body: JSON.stringify({
+                list: ,
+                value:item}),
             };
-            let response = await(await fetch(dev+list._id, options)).json()
-            console.log(response)
+            let response = await (await fetch(production + list._id, options)).json();
+            console.log(response.list);
           }
         });
         this.setState({
@@ -134,19 +137,28 @@ export default class ItemLists extends React.Component {
     }
   }
 
-  itemClick(e, id) {
+  async itemClick(e, id) {
     e.preventDefault();
     const allLists = this.state.userLists.slice();
-    allLists.forEach((list) => {
+    allLists.forEach(async (list) => {
       if (list._id === this.state.currentListId) {
         list.items.forEach((item, index) => {
           if (item._id === id) {
             list.items.splice(index, 1);
           }
         });
+        const options = {
+          method: "PUT",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            list:list}),
+        };
+        let response = await (await fetch(production + list._id, options)).json();
       }
     });
-    console.log(allLists);
     this.setState({ userLists: allLists });
   }
 

@@ -4,6 +4,7 @@ const router = express.Router();
 const { connect, disconnect } = require("../database/database");
 const List = require("../database/models/list-schema");
 const mongoose = require("mongoose");
+const { listenerCount } = require("../database/models/list-schema");
 
 //GET
 router.get("/lists/", (req, res) => {
@@ -85,23 +86,49 @@ router.post("/lists/", (req, res) => {
 });
 
 //Disconnect from DB is not working
+
+//DELETE when it is needed after popup implementation
 router.put("/lists/:listId", (req, res) => {
   const id = req.params.listId;
+  const value = req.body.value;
   const list = req.body.list;
-  if (list && id) {
-    List.findByIdAndUpdate(id, list, (error, list) => {
-      if (error || !list) {
-        res.status(422).send({
-          message: "unable to update: request error",
-        });
-        disconnect();
-        res.status(200).send({
-          message: "successfully updated list",
-          list: newList,
-        });
-        disconnect();
-      }
-    });
+  if (id) {
+    connect();
+    if (value) {
+      const item = {
+        _id: new mongoose.Types.ObjectId(),
+        value: value,
+      };
+      list.items.push(item);
+      List.findByIdAndUpdate(id, list, (error, oldList) => {
+        if (error) {
+          res.status(422).send({
+            message: "unable to update: request error",
+          });
+          disconnect();
+          res.status(200).send({
+            message: "successfully updated list",
+            list: oldList,
+          });
+          disconnect();
+        }
+      });
+    }
+    if (list) {
+      List.findByIdAndUpdate(id, list, (error, list) => {
+        if (error || !list) {
+          res.status(422).send({
+            message: "unable to update: request error",
+          });
+          disconnect();
+          res.status(200).send({
+            message: "successfully updated list",
+            list: list,
+          });
+          disconnect();
+        }
+      });
+    }
   } else {
     res.send(404).send({
       message: "unable to update: invalid object/id",
@@ -109,7 +136,5 @@ router.put("/lists/:listId", (req, res) => {
     disconnect();
   }
 });
-
-//DELETE when it is needed after popup implementation
 
 module.exports = router;
