@@ -2,9 +2,8 @@ const express = require("express");
 const router = express.Router();
 //Database
 const { connect, disconnect } = require("../database/database");
-const List = require("../database/models/list-schema");
+const { List, Item } = require("../database/models/list-schema");
 const mongoose = require("mongoose");
-const { listenerCount } = require("../database/models/list-schema");
 
 //GET
 router.get("/lists/", (req, res) => {
@@ -53,15 +52,15 @@ router.get("/lists/:listId", (req, res) => {
   }
 });
 
-//POST
+//POST Requests
+//Lists
 router.post("/lists/", (req, res) => {
   const name = req.body.name;
-  const id = req.body.id;
   if (name && name !== "") {
     connect();
     const newList = new List({
+      _id: new mongoose.Types.ObjectId(),
       name: name,
-      _id: id || new mongoose.Types.ObjectId(),
       items: [],
     });
     newList.save((error, list) => {
@@ -84,56 +83,56 @@ router.post("/lists/", (req, res) => {
     });
   }
 });
-
-//Disconnect from DB is not working
-
-//DELETE when it is needed after popup implementation
-router.put("/lists/:listId", (req, res) => {
-  const id = req.params.listId;
+//Post Items
+router.post("/lists/:listId", (req, res) => {
+  const listId = req.params.listId;
   const value = req.body.value;
-  const list = req.body.list;
+  if (value && value !== "") {
+    connect();
+    const newItem = Item({
+      _id: new mongoose.Types.ObjectId(),
+      value: value,
+    });
+    List.updateOne({ _id: listId }, { $push: { items: newItem } }, (error) => {
+      if (error) res.status(404)
+      else res.status(201).send({ message: "updated" })
+    })
+
+  } else {
+    res.status(422).send({ message: "unable to create: invalid item name" });
+  }
+});
+
+
+//UPDATE Item and List Names
+
+
+
+
+
+//DELETE Requests, you can send the body as url call too
+router.delete("/lists/:listId", (req, res) => {
+  const listId = req.params.listId;
+  const id = req.body.id;
   if (id) {
     connect();
-    if (value) {
-      const item = {
-        _id: new mongoose.Types.ObjectId(),
-        value: value,
-      };
-      list.items.push(item);
-      List.findByIdAndUpdate(id, list, (error, oldList) => {
-        if (error) {
-          res.status(422).send({
-            message: "unable to update: request error",
-          });
-          disconnect();
-          res.status(200).send({
-            message: "successfully updated list",
-            list: oldList,
-          });
-          disconnect();
-        }
-      });
-    }
-    if (list) {
-      List.findByIdAndUpdate(id, list, (error, list) => {
-        if (error || !list) {
-          res.status(422).send({
-            message: "unable to update: request error",
-          });
-          disconnect();
-          res.status(200).send({
-            message: "successfully updated list",
-            list: list,
-          });
-          disconnect();
-        }
-      });
-    }
-  } else {
-    res.send(404).send({
-      message: "unable to update: invalid object/id",
+    List.updateOne({ _id: listId }, { $pull: { items: { _id: id } } }, (error, list) => {
+      if (error) {
+        res.status(422).send({
+          message: "unable to delete: request error",
+        });
+        disconnect();
+      } else {
+        res.status(202).send({
+          message: "deleted the item object",
+        });
+        disconnect();
+      }
     });
-    disconnect();
+  } else {
+    res.status(404).send({
+      message: "unable to delete object with that id",
+    });
   }
 });
 

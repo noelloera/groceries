@@ -33,7 +33,7 @@ export default class ItemLists extends React.Component {
   //Hooks
   async getLists() {
     try {
-      let response = await (await fetch(production)).json();
+      let response = await (await fetch(dev)).json();
       if (response) {
         //good place to remove the CSS loading element
         if (!response.lists == this.state.userLists) console.log(response);
@@ -42,8 +42,8 @@ export default class ItemLists extends React.Component {
           userLists: response.lists,
           currentListId: this.state.currentListId
         });
-        if(!this.state.currentListId){
-          this.setState({currentListId: response.lists[0]._id})
+        if (!this.state.currentListId) {
+          this.setState({ currentListId: response.lists[0]._id })
         }
       }
     } catch (error) {
@@ -55,7 +55,8 @@ export default class ItemLists extends React.Component {
 
   componentDidMount() {
     this.getLists();
-    this.interval = setInterval(this.getLists, 5000);
+    this.interval = setInterval(this.getLists, 20000);
+    console.log(this.state.userLists)
   }
   componentWillUnmount() {
     clearInterval(this.interval);
@@ -73,27 +74,23 @@ export default class ItemLists extends React.Component {
     const listName = this.state.input.slice();
     if (listName) {
       try {
-        const newList = {
-          name: listName,
-          _id: new mongoose.Types.ObjectId(),
-        };
         const options = {
           method: "POST",
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(newList),
+          body: JSON.stringify({ name: listName }),
         };
-        const response = await (await fetch(production, options)).json();
+        const response = await (await fetch(dev, options)).json();
         const oldLists = this.state.userLists.slice();
-        const newListObject = response.list;
-        oldLists.push(newListObject);
+        console.log(response.list)
+        oldLists.push(response.list);
         this.setState({
-          currentListId: newListObject._id,
+          input: "",
+          currentListId: response.list._id,
           userLists: oldLists,
         });
-        this.setState({ input: "" });
       } catch (error) {
         alert(error);
       }
@@ -110,7 +107,7 @@ export default class ItemLists extends React.Component {
         let allLists = this.state.userLists.slice();
         allLists.forEach(async (list) => {
           if (list._id === this.state.currentListId) {
-            list.items.push({value: item});
+            list.items.push({ value: item });
             const options = {
               method: "PUT",
               headers: {
@@ -118,10 +115,11 @@ export default class ItemLists extends React.Component {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                list: ,
-                value:item}),
+                list: list,
+                value: item
+              }),
             };
-            let response = await (await fetch(production + list._id, options)).json();
+            let response = await (await fetch(dev + list._id, options)).json();
             console.log(response.list);
           }
         });
@@ -154,9 +152,10 @@ export default class ItemLists extends React.Component {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            list:list}),
+            list: list
+          }),
         };
-        let response = await (await fetch(production + list._id, options)).json();
+        let response = await (await fetch(dev + list._id, options)).json();
       }
     });
     this.setState({ userLists: allLists });
