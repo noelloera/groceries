@@ -93,9 +93,12 @@ router.post("/lists/:listId", (req, res) => {
       _id: new mongoose.Types.ObjectId(),
       value: value,
     });
-    List.updateOne({ _id: listId }, { $push: { items: newItem } }, (error) => {
+    List.updateOne({ _id: listId }, { $push: { items: newItem } }, (error,list) => {
       if (error) res.status(404)
-      else res.status(201).send({ message: "updated" })
+      else res.status(201).send({ 
+        message: "updated",
+        list:list
+       })
     })
 
   } else {

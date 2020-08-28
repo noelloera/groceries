@@ -5,7 +5,7 @@ import { findAllByRole, findAllByLabelText } from "@testing-library/react";
 const mongoose = require("mongoose");
 
 const dev = "http://localhost:5000/lists/";
-const production = "/lists/";
+const prod = "/lists/";
 
 export default class ItemLists extends React.Component {
   constructor(props) {
@@ -33,17 +33,17 @@ export default class ItemLists extends React.Component {
   //Hooks
   async getLists() {
     try {
-      let response = await (await fetch(dev)).json();
+      let response = await (await fetch(prod)).json();
       if (response) {
         //good place to remove the CSS loading element
         if (!response.lists == this.state.userLists) console.log(response);
         this.setState({
           mounted: true,
           userLists: response.lists,
-          currentListId: this.state.currentListId
+          currentListId: this.state.currentListId,
         });
         if (!this.state.currentListId) {
-          this.setState({ currentListId: response.lists[0]._id })
+          this.setState({ currentListId: response.lists[0]._id });
         }
       }
     } catch (error) {
@@ -55,8 +55,8 @@ export default class ItemLists extends React.Component {
 
   componentDidMount() {
     this.getLists();
-    this.interval = setInterval(this.getLists, 20000);
-    console.log(this.state.userLists)
+    this.interval = setInterval(this.getLists, 10000);
+    console.log(this.state.userLists);
   }
   componentWillUnmount() {
     clearInterval(this.interval);
@@ -82,9 +82,9 @@ export default class ItemLists extends React.Component {
           },
           body: JSON.stringify({ name: listName }),
         };
-        const response = await (await fetch(dev, options)).json();
+        const response = await (await fetch(prod, options)).json();
         const oldLists = this.state.userLists.slice();
-        console.log(response.list)
+        console.log(response.list);
         oldLists.push(response.list);
         this.setState({
           input: "",
@@ -109,23 +109,17 @@ export default class ItemLists extends React.Component {
           if (list._id === this.state.currentListId) {
             list.items.push({ value: item });
             const options = {
-              method: "PUT",
+              method: "POST",
               headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({
-                list: list,
-                value: item
-              }),
+              body: JSON.stringify({ value: item }),
             };
-            let response = await (await fetch(dev + list._id, options)).json();
-            console.log(response.list);
+            let response = await (await fetch(prod + list._id, options)).json();
           }
         });
-        this.setState({
-          userLists: allLists,
-        });
+        this.setState({ userLists: allLists });
       } catch (error) {
         console.log(error);
         alert(error);
@@ -138,24 +132,23 @@ export default class ItemLists extends React.Component {
   async itemClick(e, id) {
     e.preventDefault();
     const allLists = this.state.userLists.slice();
-    allLists.forEach(async (list) => {
+    allLists.forEach((list) => {
       if (list._id === this.state.currentListId) {
-        list.items.forEach((item, index) => {
+        list.items.forEach(async (item, index) => {
           if (item._id === id) {
+            const options = {
+              method: "DELETE",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ id: item._id }),
+            };
             list.items.splice(index, 1);
+            //write conditional for the status of response
+            let response = await (await fetch(prod + list._id, options)).json();
           }
         });
-        const options = {
-          method: "PUT",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            list: list
-          }),
-        };
-        let response = await (await fetch(dev + list._id, options)).json();
       }
     });
     this.setState({ userLists: allLists });
