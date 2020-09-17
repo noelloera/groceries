@@ -93,25 +93,24 @@ router.post("/lists/:listId", (req, res) => {
       _id: new mongoose.Types.ObjectId(),
       value: value,
     });
-    List.updateOne({ _id: listId }, { $push: { items: newItem } }, (error,list) => {
-      if (error) res.status(404)
-      else res.status(201).send({ 
-        message: "updated",
-        list:list
-       })
-    })
-
+    List.updateOne(
+      { _id: listId },
+      { $push: { items: newItem } },
+      (error, list) => {
+        if (error) res.status(404);
+        else
+          res.status(201).send({
+            message: "updated",
+            list: list,
+          });
+      }
+    );
   } else {
     res.status(422).send({ message: "unable to create: invalid item name" });
   }
 });
 
-
 //UPDATE Item and List Names
-
-
-
-
 
 //DELETE Requests, you can send the body as url call too
 router.delete("/lists/:listId", (req, res) => {
@@ -119,19 +118,23 @@ router.delete("/lists/:listId", (req, res) => {
   const id = req.body.id;
   if (id) {
     connect();
-    List.updateOne({ _id: listId }, { $pull: { items: { _id: id } } }, (error, list) => {
-      if (error) {
-        res.status(422).send({
-          message: "unable to delete: request error",
-        });
-        disconnect();
-      } else {
-        res.status(202).send({
-          message: "deleted the item object",
-        });
-        disconnect();
+    List.updateOne(
+      { _id: listId },
+      { $pull: { items: { _id: id } } },
+      (error, list) => {
+        if (error) {
+          res.status(422).send({
+            message: "unable to delete: request error",
+          });
+          disconnect();
+        } else {
+          res.status(202).send({
+            message: "deleted the item object",
+          });
+          disconnect();
+        }
       }
-    });
+    );
   } else {
     res.status(404).send({
       message: "unable to delete object with that id",
