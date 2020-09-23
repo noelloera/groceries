@@ -1,8 +1,6 @@
 import React from "react";
 import "./ItemLists.css";
 import Items from "../Items/Items.js";
-import { findAllByRole, findAllByLabelText } from "@testing-library/react";
-const mongoose = require("mongoose");
 
 const dev = "http://localhost:5000/lists/";
 const prod = "/lists/";
@@ -33,10 +31,10 @@ export default class ItemLists extends React.Component {
   //Hooks
   async getLists() {
     try {
-      let response = await (await fetch(prod)).json();
+      let response = await (await fetch(dev)).json();
       if (response) {
         //good place to remove the CSS loading element
-        if (!response.lists == this.state.userLists) console.log(response);
+        if (!response.lists === this.state.userLists) console.log(response);
         this.setState({
           mounted: true,
           userLists: response.lists,
@@ -48,8 +46,8 @@ export default class ItemLists extends React.Component {
       }
     } catch (error) {
       console.log(error);
-      //Keeps refreshing until it works but needs to produce a message later in the app
-      window.location = "/";
+      //Refreshes every 3 seconds
+      setTimeout(function(){ window.location = "/"; }, 3000);
     }
   }
 
@@ -82,7 +80,7 @@ export default class ItemLists extends React.Component {
           },
           body: JSON.stringify({ name: listName }),
         };
-        const response = await (await fetch(prod, options)).json();
+        const response = await (await fetch(dev, options)).json();
         const oldLists = this.state.userLists.slice();
         console.log(response.list);
         oldLists.push(response.list);
@@ -116,7 +114,7 @@ export default class ItemLists extends React.Component {
               },
               body: JSON.stringify({ value: item }),
             };
-            let response = await (await fetch(prod + list._id, options)).json();
+            let response = await (await fetch(dev + list._id, options)).json();
           }
         });
         this.setState({ userLists: allLists });
@@ -146,7 +144,7 @@ export default class ItemLists extends React.Component {
             };
             list.items.splice(index, 1);
             //write conditional for the status of response
-            let response = await (await fetch(prod + list._id, options)).json();
+            let response = await (await fetch(dev + list._id, options)).json();
           }
         });
       }
