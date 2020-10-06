@@ -38,7 +38,7 @@ export default class ItemLists extends React.Component {
         this.setState({
           mounted: true,
           userLists: response.lists,
-          currentListId: this.state.currentListId,
+          //currentListId: this.state.currentListId,
         });
         if (!this.state.currentListId) {
           this.setState({ currentListId: response.lists[0]._id });
@@ -47,7 +47,7 @@ export default class ItemLists extends React.Component {
     } catch (error) {
       console.log(error);
       //Refreshes every 3 seconds
-      setTimeout(function(){ window.location = "/"; }, 3000);
+      swetTimeout(function(){ window.location = "/"; }, 3000);
     }
   }
 
