@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 //Database
 const { connect, disconnect } = require("../database/database");
-const { List, Item } = require("../database/models/list-schema");
+const { List, Item } = require("../database/models/User");
 const mongoose = require("mongoose");
 
 //GET

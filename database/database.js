@@ -1,8 +1,5 @@
 const mongoose = require("mongoose");
-require("dotenv").config();
-
-const dbUrl = `mongodb+srv://${process.env.MONGO_E}:${process.env.MONGO_P}@groceries.ggozb.mongodb.net/<dbname>?retryWrites=true&w=majority`;
-
+require("dotenv").config({ path: ".env" });
 const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -10,22 +7,26 @@ const options = {
 };
 
 async function connect() {
-  await mongoose
-    .connect(process.env.MONGO_URI || dbUrl, options)
-    .then(() => {
-      console.log("...successfully connected to the database");
-    })
-    .catch((error) => {
-      console.log(error);
-      throw error;
-    });
+  try {
+    await mongoose
+      .connect(process.env.MONGO_URI, options)
+      .then(() => {
+        console.log("successfully connected database...");
+      })
+      .catch((error) => {
+        console.log(error);
+        throw error;
+      });
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 async function disconnect() {
   await mongoose
     .disconnect()
     .then(() => {
-      console.log("...succesfully disconnected from the database");
+      console.log("... successfully disconnected database");
     })
     .catch((error) => {
       console.log(error);

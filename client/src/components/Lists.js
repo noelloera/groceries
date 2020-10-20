@@ -1,6 +1,6 @@
 import React from "react";
 import "./ItemLists.css";
-import Items from "../Items/Items.js";
+import Items from "./Items.js";
 
 const dev = "http://localhost:5000/lists/";
 const prod = "/lists/";
