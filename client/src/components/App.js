@@ -11,7 +11,6 @@ export default class App extends React.Component {
       <BrowserRouter>
         <Switch>
           <Route path="/" component={Login}></Route>
-
         </Switch>
       </BrowserRouter>
     );
