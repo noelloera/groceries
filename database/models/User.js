@@ -4,20 +4,22 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const itemSchema = new Schema({
   _id: ObjectId,
-  name: String,
+  value: String,
 });
 const listSchema = new Schema({
-  _id: ObjectId,
   name: String,
   items: [itemSchema],
 });
 const userSchema = new Schema({
-  _id: ObjectId,
+  username: {
+    type: String,
+    required: true,
+  },
   createdAt: {
     type: Date,
     default: Date.now(),
   },
-  username: {
+  email: {
     type: String,
     required: true,
   },
@@ -25,7 +27,7 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  expiredTokens: [String],
+  refreshTokens: [String],
   lists: [listSchema],
 });
 

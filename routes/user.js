@@ -45,7 +45,7 @@ router.post(
       //Logic needs to register refresh tokens to database and ensure that upon signout that token doesnt work anymore
       res.status(201).send({ refresh: refresh, access: access });
     } catch (err) {
-      console.log(err.messsage);
+      console.log(err);
       res.status(500).send({ errors: "server error" });
     }
   }
@@ -64,9 +64,13 @@ router.post(
     }
     const { email, password } = req.body;
     try {
-      let user = User.findOne({ email });
+      let user = await User.findOne({ email });
       if (!user) {
         res.status(400).send({ errors: "user does not exist" });
+      }
+      const match = await bcrypt.compare(password, user.password);
+      if (!match) {
+        return res.status(400).send({ message: "incorrect email/password" });
       }
       const payload = {
         id: user.id,
@@ -78,8 +82,7 @@ router.post(
         refresh: refresh,
       });
     } catch (err) {
-      console.log(err.message);
-      res.status(500).send({ errors: "server error" });
+      res.status(500).send({ errors: "invalid request" });
     }
   }
 );
@@ -105,4 +108,5 @@ router.post("/token", (req, res) => {
     res.status(401).send({ message: "invalid token" });
   }
 });
+
 module.exports = router;

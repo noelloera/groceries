@@ -1,11 +1,25 @@
 const express = require("express");
 const router = express.Router();
-//Database
-const { connect, disconnect } = require("../database/database");
-const { List, Item } = require("../database/models/User");
+const { User, List, Item } = require("../database/models/User.js");
 const mongoose = require("mongoose");
+const auth = require("../middleware/auth.js");
 
-//GET
+router.get("/me", auth, async (req, res) => {
+  try {
+    if (req.body.id) {
+      const user = await User.findById(req.body.id);
+      res.status(200).send({
+        username: user.username,
+        lists: user.lists,
+      });
+    } else {
+      res.status(401).send({ message: "error in fetching user" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "error in fetching user" });
+  }
+});
 router.get("/lists/", (req, res) => {
   //Later, should only send if the log in was successful
   connect();
