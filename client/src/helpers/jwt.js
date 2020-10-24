@@ -11,4 +11,4 @@ const clearRefresh = () => {
   localStorage.clear("refresh");
 };
 
-module.exports = { getAccess, getRefresh, clearAccess, clearAccess };
+module.exports = { getAccess, getRefresh, clearAccess, clearRefresh };

@@ -8,13 +8,13 @@ import {
 } from "../helpers/jwt.js";
 import axios from "axios";
 
-export default class Authenticator extends React.Component {
+class Authenticator extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       authenticated: false,
     };
-      this.newAccess = this.newAccess.bind(this)
+    this.newAccess = this.newAccess.bind(this);
   }
 
   newAccess(refresh) {
@@ -37,12 +37,34 @@ export default class Authenticator extends React.Component {
   async componentDidMount() {
     const access = getAccess();
     const refresh = getRefresh();
+    console.log(refresh);
+    console.log(access);
+
     if (!access && refresh) {
-      await this.newAccess()
+      await this.newAccess();
     }
-      if (access) {
-        axios.get("/me", {headers: {Authorization: `Bearer ${access}`}})
+    if (access) {
+      await axios
+        .get("/me", { headers: { Authorization: `Bearer ${access}` } })
+        .then((res) => {
+          if (res.status === 200) {
+            this.setState({authenticated:true})
+            this.props.history.push("/lists");
+          }
+        })
+        .catch((err) => {
+          clearAccess();
+          clearRefresh();
+          this.props.history.push("/login");
+        });
     }
-     if() 
+  }
+  render() {
+    if (this.state.authenticaed) {
+      return <div>{this.props.children}</div>;
+    }
+    return <div>no content</div>;
   }
 }
+
+export default withRouter(Authenticator);

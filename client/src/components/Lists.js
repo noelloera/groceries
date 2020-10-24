@@ -1,6 +1,4 @@
 import React from "react";
-import "./ItemLists.css";
-import Items from "./Items.js";
 
 const dev = "http://localhost:5000/lists/";
 const prod = "/lists/";
@@ -47,7 +45,9 @@ export default class ItemLists extends React.Component {
     } catch (error) {
       console.log(error);
       //Refreshes every 3 seconds
-      swetTimeout(function(){ window.location = "/"; }, 3000);
+      setTimeout(function () {
+        window.location = "/";
+      }, 3000);
     }
   }
 
@@ -217,7 +217,6 @@ export default class ItemLists extends React.Component {
             }}
           ></input>
         </form>
-        <Items newItem={this.newItem} renderItems={this.renderItems} />
       </div>
     );
   }

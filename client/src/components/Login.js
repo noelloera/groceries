@@ -2,8 +2,9 @@ import React from "react";
 import axios from "axios";
 
 import InputField from "./InputField";
+import { withRouter } from "react-router-dom";
 
-export default class LogIn extends React.Component {
+class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -26,7 +27,7 @@ export default class LogIn extends React.Component {
       [e.target.name]: e.target.value,
     });
   }
-    //Refactor this post request to only be one and change depending on the option being sent
+  //Refactor this post request to only be one and change depending on the option being sent
   submit(e) {
     e.preventDefault();
     this.state.option === "login"
@@ -45,18 +46,21 @@ export default class LogIn extends React.Component {
             alert("incorrect email/password");
             this.props.history.go(0);
           })
-        : axios.post("/signup", {
+      : axios
+          .post("/signup", {
             email: this.state.email,
             password: this.state.password,
-            username:this.state.username
-        }).then(res => {
-            localStorage.setItem("access", res.data.access)
-            localStorage.setItem("refresh", res.data.refresh)
-            this.props.history.push("/lists")
-        }).catch(err => {
-            console.log(err)
-            this.props.history.go(0)
-        });
+            username: this.state.username,
+          })
+          .then((res) => {
+            localStorage.setItem("access", res.data.access);
+            localStorage.setItem("refresh", res.data.refresh);
+            this.props.history.push("/lists");
+          })
+          .catch((err) => {
+            console.log(err);
+            this.props.history.go(0);
+          });
   }
   render() {
     return (
@@ -107,3 +111,5 @@ export default class LogIn extends React.Component {
     );
   }
 }
+
+export default withRouter(Login);
