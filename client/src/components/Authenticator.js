@@ -60,7 +60,7 @@ class Authenticator extends React.Component {
     }
   }
   render() {
-    if (this.state.authenticaed) {
+    if (this.state.authenticated) {
       return <div>{this.props.children}</div>;
     }
     return <div>no content</div>;

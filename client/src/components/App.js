@@ -13,6 +13,8 @@ export default class App extends React.Component {
       <BrowserRouter>
         <Switch>
           <Route path="/" exact component={Login}></Route>
+          <Route path="/login" exact component={Login}></Route>
+
           <Authenticator>
             <Route path="/lists" component={Lists}></Route>
           </Authenticator>
