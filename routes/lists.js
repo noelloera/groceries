@@ -4,6 +4,7 @@ const { User, List, Item } = require("../database/models/User.js");
 const mongoose = require("mongoose");
 const auth = require("../middleware/auth.js");
 
+//These requests should connect and disconnect after each call
 router.get("/me", auth, async (req, res) => {
   try {
     if (req.body.id) {
@@ -22,14 +23,12 @@ router.get("/me", auth, async (req, res) => {
 });
 router.get("/lists/", (req, res) => {
   //Later, should only send if the log in was successful
-  connect();
   List.find((error, lists) => {
     if (error) {
       res.status(500).send({
         message: "unable to retrieve objects",
         error: error,
       });
-      disconnect();
     } else {
       res.status(200).send({
         message: "found objects",
@@ -44,19 +43,16 @@ router.get("/lists/", (req, res) => {
 router.get("/lists/:listId", (req, res) => {
   const id = req.params.listId;
   if (id && id !== "") {
-    connect();
     List.findById(id, (error, list) => {
       if (error || !list) {
         res.status(404).send({
           message: "unable to retrieve list",
         });
-        disconnect();
       } else {
         res.status(302).send({
           message: "successfully retrieved list",
           list: list,
         });
-        disconnect();
       }
     });
   } else {
@@ -71,7 +67,6 @@ router.get("/lists/:listId", (req, res) => {
 router.post("/lists/", (req, res) => {
   const name = req.body.name;
   if (name && name !== "") {
-    connect();
     const newList = new List({
       _id: new mongoose.Types.ObjectId(),
       name: name,
@@ -82,13 +77,11 @@ router.post("/lists/", (req, res) => {
         res.status(422).send({
           message: "unable to create: invalid list name",
         });
-        disconnect();
       } else {
         res.status(201).send({
           message: "successully created list",
           list: list,
         });
-        disconnect();
       }
     });
   } else {
@@ -97,12 +90,12 @@ router.post("/lists/", (req, res) => {
     });
   }
 });
+
 //Post Items
 router.post("/lists/:listId", (req, res) => {
   const listId = req.params.listId;
   const value = req.body.value;
   if (value && value !== "") {
-    connect();
     const newItem = Item({
       _id: new mongoose.Types.ObjectId(),
       value: value,
@@ -131,7 +124,6 @@ router.delete("/lists/:listId", (req, res) => {
   const listId = req.params.listId;
   const id = req.body.id;
   if (id) {
-    connect();
     List.updateOne(
       { _id: listId },
       { $pull: { items: { _id: id } } },
@@ -140,12 +132,10 @@ router.delete("/lists/:listId", (req, res) => {
           res.status(422).send({
             message: "unable to delete: request error",
           });
-          disconnect();
         } else {
           res.status(202).send({
             message: "deleted the item object",
           });
-          disconnect();
         }
       }
     );

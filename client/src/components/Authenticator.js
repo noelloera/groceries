@@ -48,7 +48,7 @@ class Authenticator extends React.Component {
         .get("/me", { headers: { Authorization: `Bearer ${access}` } })
         .then((res) => {
           if (res.status === 200) {
-            this.setState({authenticated:true})
+            this.setState({ authenticated: true });
             this.props.history.push("/lists");
           }
         })

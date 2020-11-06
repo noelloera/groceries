@@ -1,7 +1,7 @@
 import React from "react";
+import axios from "axios";
+import {getAccess} from "../helpers/jwt"
 
-const dev = "http://localhost:5000/lists/";
-const prod = "/lists/";
 
 export default class ItemLists extends React.Component {
   constructor(props) {
@@ -9,13 +9,14 @@ export default class ItemLists extends React.Component {
     //State values:
     this.state = {
       input: "",
-      mounted: false,
       currentListId: null,
-      userLists: [],
+      username: null,
+      lists: [],
     };
     //Element references
     this.listInput = React.createRef();
     //Method Binding:
+    /*
     this.renderLists = this.renderLists.bind(this);
     this.renderItems = this.renderItems.bind(this);
     this.listClick = this.listClick.bind(this);
@@ -23,41 +24,20 @@ export default class ItemLists extends React.Component {
     this.focus = this.focus.bind(this);
     this.newList = this.newList.bind(this);
     this.newItem = this.newItem.bind(this);
-    this.getLists = this.getLists.bind(this);
+    this.getLists = this.getLists.bind(this);*/
   }
 
   //Hooks
   async getLists() {
-    try {
-      let response = await (await fetch(dev)).json();
-      if (response) {
-        //good place to remove the CSS loading element
-        if (!response.lists === this.state.userLists) console.log(response);
-        this.setState({
-          mounted: true,
-          userLists: response.lists,
-          //currentListId: this.state.currentListId,
-        });
-        if (!this.state.currentListId) {
-          this.setState({ currentListId: response.lists[0]._id });
-        }
-      }
-    } catch (error) {
-      console.log(error);
-      //Refreshes every 3 seconds
-      setTimeout(function () {
-        window.location = "/";
-      }, 3000);
-    }
+    
   }
 
   componentDidMount() {
-    this.getLists();
-    this.interval = setInterval(this.getLists, 10000);
-    console.log(this.state.userLists);
+    //Will refresh after comparison of items 
+
   }
   componentWillUnmount() {
-    clearInterval(this.interval);
+    //Will clear the intreval
   }
 
   //Methods
@@ -80,7 +60,7 @@ export default class ItemLists extends React.Component {
           },
           body: JSON.stringify({ name: listName }),
         };
-        const response = await (await fetch(dev, options)).json();
+        const response = "response of axios call"
         const oldLists = this.state.userLists.slice();
         console.log(response.list);
         oldLists.push(response.list);
@@ -114,7 +94,7 @@ export default class ItemLists extends React.Component {
               },
               body: JSON.stringify({ value: item }),
             };
-            let response = await (await fetch(dev + list._id, options)).json();
+            let response = "axios method call";
           }
         });
         this.setState({ userLists: allLists });
@@ -144,7 +124,7 @@ export default class ItemLists extends React.Component {
             };
             list.items.splice(index, 1);
             //write conditional for the status of response
-            let response = await (await fetch(dev + list._id, options)).json();
+            let response = "axios method call";
           }
         });
       }
@@ -158,6 +138,7 @@ export default class ItemLists extends React.Component {
 
   //Rendering Methods
   renderLists() {
+    /*
     const allLists = this.state.userLists.slice();
     if (allLists !== undefined && allLists.length !== 0 && this.state.mounted) {
       return allLists.map((currentList) => {
@@ -172,10 +153,11 @@ export default class ItemLists extends React.Component {
       });
     } else {
       return <li>There are no saved lists tap (+) to add one</li>;
-    }
+    }*/
   }
 
   renderItems() {
+    /*
     let items = [];
     const allLists = this.state.userLists.slice();
     allLists.forEach((list) => {
@@ -198,7 +180,7 @@ export default class ItemLists extends React.Component {
       });
     } else {
       return <li>no items</li>;
-    }
+    }*/
   }
 
   render() {
@@ -206,17 +188,6 @@ export default class ItemLists extends React.Component {
     return (
       <div>
         <h1>Lists:</h1>
-        <button onClick={(e) => this.focus(e)}>+</button>
-        <ul>{this.renderLists()}</ul>
-        <form onSubmit={(e) => this.newList(e)}>
-          <input
-            ref={this.listInput}
-            value={this.state.input}
-            onChange={(e) => {
-              this.setState({ input: e.target.value });
-            }}
-          ></input>
-        </form>
       </div>
     );
   }
