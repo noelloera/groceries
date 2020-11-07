@@ -91,9 +91,8 @@ router.post(
 //router.delete
 
 router.post("/token", (req, res) => {
-  const refresh = req.body.refresh;
+  const refresh = req.body.token;
   if (!refresh) res.status(401).send({ message: "invalid token" });
-
   try {
     jwt.verify(refresh, process.env.REFRESH_TOKEN_SECRET, (error, user) => {
       if (error) res.status(403).send({ message: "invalid token" });

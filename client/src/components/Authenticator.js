@@ -17,14 +17,13 @@ class Authenticator extends React.Component {
     this.newAccess = this.newAccess.bind(this);
   }
 
-  newAccess(refresh) {
+  async newAccess(refresh) {
     if (refresh) {
-      axios
+      await axios
         .post("/token", { token: refresh })
         .then((res) => {
-          console.log(res.data.access);
           localStorage.setItem("access", res.data.access);
-          this.props.history.push("/lists");
+          this.props.history.push("/login");
         })
         .catch((err) => {
           console.log(err);
@@ -37,13 +36,10 @@ class Authenticator extends React.Component {
   async componentDidMount() {
     const access = getAccess();
     const refresh = getRefresh();
-    console.log(refresh);
-    console.log(access);
-
     if (!access && refresh) {
-      await this.newAccess();
+      await this.newAccess(refresh);
     }
-    if (access) {
+    if (access && refresh) {
       await axios
         .get("/me", { headers: { Authorization: `Bearer ${access}` } })
         .then((res) => {
@@ -58,12 +54,17 @@ class Authenticator extends React.Component {
           this.props.history.push("/login");
         });
     }
+    if (!refresh && !refresh) {
+      clearAccess();
+      clearRefresh();
+      this.props.history.push("/login");
+    }
   }
   render() {
     if (this.state.authenticated) {
       return <div>{this.props.children}</div>;
     }
-    return <div>no content</div>;
+    return <div> loading </div>;
   }
 }
 

@@ -1,7 +1,6 @@
 import React from "react";
 import axios from "axios";
-import {getAccess} from "../helpers/jwt"
-
+import { getAccess, clearAccess } from "../helpers/jwt";
 
 export default class ItemLists extends React.Component {
   constructor(props) {
@@ -15,26 +14,27 @@ export default class ItemLists extends React.Component {
     };
     //Element references
     this.listInput = React.createRef();
-    //Method Binding:
-    /*
-    this.renderLists = this.renderLists.bind(this);
-    this.renderItems = this.renderItems.bind(this);
-    this.listClick = this.listClick.bind(this);
-    this.itemClick = this.itemClick.bind(this);
-    this.focus = this.focus.bind(this);
-    this.newList = this.newList.bind(this);
-    this.newItem = this.newItem.bind(this);
-    this.getLists = this.getLists.bind(this);*/
   }
 
   //Hooks
-  async getLists() {
-    
-  }
+  async getLists() {}
 
-  componentDidMount() {
-    //Will refresh after comparison of items 
-
+  async componentDidMount() {
+    //Will refresh after comparison of items
+    const access = getAccess();
+    await axios
+      .get("/me", { headers: { Authorization: `Bearer ${access}` } })
+      .then((res) => {
+        this.setState({
+          username: res.data.username,
+          lists: res.data.lists,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        clearAccess();
+        this.props.history.push("/Login");
+      });
   }
   componentWillUnmount() {
     //Will clear the intreval
@@ -60,7 +60,7 @@ export default class ItemLists extends React.Component {
           },
           body: JSON.stringify({ name: listName }),
         };
-        const response = "response of axios call"
+        const response = "response of axios call";
         const oldLists = this.state.userLists.slice();
         console.log(response.list);
         oldLists.push(response.list);
@@ -187,7 +187,10 @@ export default class ItemLists extends React.Component {
     //Should map the item lists, as well as handle methods for lists
     return (
       <div>
-        <h1>Lists:</h1>
+        <h1>{this.state.username}</h1>
+        {this.state.lists.map((list) => {
+          return <h2>{list.name}</h2>;
+        })}
       </div>
     );
   }
