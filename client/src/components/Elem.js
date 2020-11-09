@@ -1,6 +1,6 @@
 import React from "react";
 
-const List = (props) => {
+const Elem = (props) => {
   return (
     <h2
       onClick={(e) => {
@@ -10,4 +10,4 @@ const List = (props) => {
   );
 };
 
-export default List;
+export default Elem;
