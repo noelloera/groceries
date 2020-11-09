@@ -4,24 +4,29 @@ import axios from "axios";
 import InputField from "./InputField";
 import { withRouter } from "react-router-dom";
 
-import {getAccess, getRefresh, clearAccess, clearRefresh} from "../helpers/jwt"
+import {
+  getAccess,
+  getRefresh,
+  clearAccess,
+  clearRefresh,
+} from "../helpers/jwt";
 
 class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: undefined,
-      password: undefined,
-      username: undefined,
+      email: "",
+      password: "",
+      username: "",
       option: "login",
     };
   }
 
   componentDidMount() {
-    const access = getRefresh()
-    const refresh = getRefresh()
-    if (refresh) {
-      this.props.history.push("/Lists/")
+    const access = getRefresh();
+    const refresh = getRefresh();
+    if (access && refresh) {
+      this.props.history.push("/Lists/");
     }
   }
 

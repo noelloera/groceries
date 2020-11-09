@@ -6,6 +6,7 @@ const InputField = (props) => {
       name={props.name}
       placeholder={props.placeholder}
       type={props.type}
+      value={props.value}
       onChange={(e) => {
         props.onChange(e);
       }}
