@@ -43,7 +43,6 @@ export default class ItemLists extends React.Component {
     });
   }
   itemClick(e, id) {
-    
   }
   renderLists() {
     return this.state.lists.map((list, i) => {

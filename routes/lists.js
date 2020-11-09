@@ -54,8 +54,10 @@ router.post("/lists/:listId", (req, res) => {
       { id: req.body.id, "lists._id": _id },
       { $push: { "lists.$.items": newItem } },
       (err, log) => {
-        if (err) res.status(422).send(log)
-        res.status(201).send({message: "sucessfully updated list with new item"})
+        if (err) res.status(422).send(log);
+        res
+          .status(201)
+          .send({ message: "sucessfully updated list with new item" });
       }
     );
   } else {
@@ -69,12 +71,15 @@ router.delete("/lists/:listId", auth, (req, res) => {
   if (itemId && listId) {
     User.updateOne(
       { _id: req.body.id, "lists._id": listId, "items._id": itemId },
-      {},(err,log)=>{
-        
+      { $pull:{"lists.$.items":{_id:itemId}}},
+      (err, log) => {
+        if (err) res.status(422).send({ message: "unable to delete: request error" })
+        res.status(202).send({message: "deleted the item"})
       }
-    )
+    );
+  } else {
+    res.status(422).send({ message: "unable to delete: request error" });
   }
-
 });
 
 module.exports = router;
