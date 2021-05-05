@@ -1,15 +1,18 @@
-import React from "react";
-import axios from "axios";
-
-import InputField from "./InputField";
-import { withRouter } from "react-router-dom";
-
 import {
   getAccess,
   getRefresh,
   clearAccess,
   clearRefresh,
 } from "../helpers/jwt";
+import React from "react";
+import axios from "axios";
+import InputField from "./InputField";
+import { withRouter } from "react-router-dom";
+//validators
+import passwordValidator from "password-validator";
+import emailValidator from "email-validator";
+const password = new passwordValidator();
+password.is().min(6).is().max(18).has().digits(1).has().not().spaces();
 
 class Login extends React.Component {
   constructor(props) {
@@ -45,37 +48,49 @@ class Login extends React.Component {
   //Refactor this post request to only be one and change depending on the option being sent
   submit(e) {
     e.preventDefault();
-    this.state.option === "login"
-      ? axios
-          .post("/login", {
-            email: this.state.email,
-            password: this.state.password,
-          })
-          .then((res) => {
-            localStorage.setItem("access", res.data.access);
-            localStorage.setItem("refresh", res.data.refresh);
-            this.props.history.push("/lists");
-          })
-          .catch((err) => {
-            console.log(err);
-            alert("incorrect email/password");
-            this.props.history.go(0);
-          })
-      : axios
-          .post("/signup", {
-            email: this.state.email,
-            password: this.state.password,
-            username: this.state.username,
-          })
-          .then((res) => {
-            localStorage.setItem("access", res.data.access);
-            localStorage.setItem("refresh", res.data.refresh);
-            this.props.history.push("/lists");
-          })
-          .catch((err) => {
-            console.log(err);
-            this.props.history.go(0);
-          });
+    //checks if the option is login and the email and password is valid
+    if (
+      this.state.option === "login" &&
+      emailValidator.validate(this.state.email) &&
+      password.validate(this.state.password)
+    ) {
+      axios
+        .post("/login", {
+          email: this.state.email,
+          password: this.state.password,
+        })
+        .then((res) => {
+          localStorage.setItem("access", res.data.access);
+          localStorage.setItem("refresh", res.data.refresh);
+          this.props.history.push("/lists");
+        })
+        .catch((err) => {
+          console.log(err);
+          this.props.history.go(0);
+        });
+    }
+    if (
+      this.state.option === "signup" &&
+      this.state.username &&
+      emailValidator.validate(this.state.email) &&
+      password.validate(this.state.password)
+    ) {
+      axios
+        .post("/signup", {
+          email: this.state.email,
+          password: this.state.password,
+          username: this.state.username,
+        })
+        .then((res) => {
+          localStorage.setItem("access", res.data.access);
+          localStorage.setItem("refresh", res.data.refresh);
+          this.props.history.push("/lists");
+        })
+        .catch((err) => {
+          console.log(err);
+          this.props.history.go(0);
+        });
+    }
   }
   render() {
     return (

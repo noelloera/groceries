@@ -43,8 +43,10 @@ class Lists extends React.Component {
       })
       .catch((err) => {
         console.log(err);
-        clearAccess();
-        this.props.history.push("/login");
+        if (this.state.username) {
+          clearAccess();
+          this.props.history.push("/login");
+        }
       });
   }
   async componentDidMount() {
@@ -74,7 +76,16 @@ class Lists extends React.Component {
   }
   renderItems() {
     return this.state.items.map((item) => {
-      return <Elem key={item._id} name={item.value} />;
+      return (
+        <Elem
+          id={item._id}
+          key={item._id}
+          name={item.value}
+          onClick={(e, id) => {
+            console.log(id);
+          }}
+        />
+      );
     });
   }
   change(e) {
@@ -140,7 +151,7 @@ class Lists extends React.Component {
   render() {
     return (
       <div>
-        <h1>{this.state.username}</h1>
+        <h1>Hello {this.state.username}, </h1>
         <button>+</button>
 
         <form

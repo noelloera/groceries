@@ -4,9 +4,11 @@ const Elem = (props) => {
   return (
     <h2
       onClick={(e) => {
-        props.onClick(e);
+        props.onClick(e, props.id);
       }}
-      >{props.name}</h2>
+    >
+      {props.name}
+    </h2>
   );
 };
 
