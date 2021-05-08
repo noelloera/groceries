@@ -3,7 +3,7 @@ require("dotenv").config({ path: ".env" });
 const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useFindAndModify: false,
+  useFindAndModify: true,
 };
 
 async function connect() {

@@ -23,12 +23,14 @@ router.post(
     if (!errors.isEmpty()) {
       res.status(400).send({ errors: errors.array() });
     }
-    const { email, password, username } = req.body;
+    let { email, password, username } = req.body;
     try {
       let user = await User.findOne({ email });
       if (user) {
         res.status(400).send({ message: "user already exists" });
       }
+      //Capitalizes the username
+      username = username.charAt(0).toUpperCase() + username.slice(1);
       user = new User({
         email,
         password,

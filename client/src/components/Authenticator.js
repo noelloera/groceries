@@ -54,7 +54,7 @@ class Authenticator extends React.Component {
           this.props.history.push("/login");
         });
     }
-    if (!refresh && !refresh) {
+    if (!refresh) {
       clearAccess();
       clearRefresh();
       this.props.history.push("/login");

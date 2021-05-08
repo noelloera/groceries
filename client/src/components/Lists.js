@@ -17,18 +17,7 @@ class Lists extends React.Component {
       items: [],
     };
   }
-
-  equal(a, b) {
-    for (var i = 0, len = a.length; i < len; i++) {
-      for (var j = 0, len2 = b.length; j < len2; j++) {
-        if (a[i]._id === b[j]._id) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-    }
-  }
+  //Helper function uses locally stored tokens to make secure axios calls
   async getLists(i) {
     const access = getAccess();
     await axios
@@ -49,6 +38,7 @@ class Lists extends React.Component {
         }
       });
   }
+  //Runs getLists function asynchroniously
   async componentDidMount() {
     //Will refresh after comparison of items
     await this.getLists(0);
@@ -151,7 +141,10 @@ class Lists extends React.Component {
   render() {
     return (
       <div>
-        <h1>Hello {this.state.username}, </h1>
+        {/*Displays the username with the first letter capitalized */}
+        <h1>
+          Hello {this.state.username},
+        </h1>
         <button>+</button>
 
         <form
