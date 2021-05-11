@@ -34,7 +34,10 @@ router.post("/lists/", auth, (req, res) => {
       { $push: { lists: newList } },
       (err, log) => {
         if (err) res.status(422).send(err);
-        res.status(201).send({ message: "successfully created list" });
+        res.status(201).send({
+          newList: newList,
+          message: "successfully created list",
+        });
       }
     );
   } else {
@@ -55,9 +58,10 @@ router.post("/lists/:listId", (req, res) => {
       { $push: { "lists.$.items": newItem } },
       (err, log) => {
         if (err) res.status(422).send(log);
-        res
-          .status(201)
-          .send({ message: "sucessfully updated list with new item" });
+        res.status(201).send({
+          newItem: newItem,
+          message: "sucessfully updated list",
+        });
       }
     );
   } else {
