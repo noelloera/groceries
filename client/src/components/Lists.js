@@ -6,30 +6,31 @@ import InputField from "./InputField";
 import { withRouter } from "react-router-dom";
 
 class Lists extends React.Component {
+  access = getAccess();
   constructor(props) {
     super(props);
     this.state = {
       listField: "",
       itemField: "",
       listId: null,
-      listIndex: null,
+      listIndex: 0,
       username: null,
       lists: [],
       items: [],
     };
     this.getLists = this.getLists.bind(this);
+    this.itemClick = this.itemClick.bind(this);
   }
   //Helper function uses locally stored tokens to make secure axios calls
   async getLists() {
-    const access = getAccess();
     return await axios
-      .get("/me", { headers: { Authorization: `Bearer ${access}` } })
+      .get("/me", { headers: { Authorization: `Bearer ${this.access}` } })
       .then((res) => {
         return res.data;
       })
       .catch((err) => {
         console.log(err);
-        if (this.state.username) {
+        if (!this.state.username) {
           clearAccess();
           this.props.history.push("/login");
         }
@@ -58,18 +59,21 @@ class Lists extends React.Component {
   async componentDidUpdate(prevProps, prevState) {
     //Compare the previous to current state, should run periodically
     //Should also update the items in the current chosen list like listClick
-    await prevState.lists.forEach((prevList) => {
-      this.state.lists.forEach((list) => {
-        if (prevList.length !== list.length) {
-          this.getLists().then((data) => {
-            //Updates the lists
-            this.setState({
-              lists: data.lists,
-            });
-          });
-        }
+    if (this.state.lists.length !== prevState.lists.length) {
+      await this.getLists().then((data) => {
+        this.setState({
+          lists: this.state.lists,
+        });
       });
-    });
+    }
+    //Updates if the items changed
+    if (this.state.items !== prevState.items) {
+      await this.getLists().then((data) => {
+        this.setState({
+          lists: this.state.lists,
+        });
+      });
+    }
   }
   //Sets the listId to the current index of the list object
   listClick(e, i) {
@@ -81,6 +85,7 @@ class Lists extends React.Component {
       listIndex: i,
     });
   }
+  //Renders by mapping each of the existing list objects
   renderLists() {
     return this.state.lists.map((list, i) => {
       return (
@@ -94,22 +99,22 @@ class Lists extends React.Component {
       );
     });
   }
-  //Renders the item objects of the current chosen list
+  //Renders by mapping each of the item objects of active listId
   renderItems() {
-    return this.state.items.map((item) => {
+    return this.state.items.map((item, i) => {
       return (
         <Elem
           id={item._id}
           key={item._id}
           name={item.value}
           onClick={(e, id) => {
-            //Will Delete the item if clicked
-            console.log(id);
+            this.itemClick(e, i, id);
           }}
         />
       );
     });
   }
+  //Sets the state by the name of the field
   change(e) {
     this.setState({
       [e.target.name]: e.target.value,
@@ -182,6 +187,28 @@ class Lists extends React.Component {
     } else {
       //If there is no access token user pushed to the authenticator component
       this.props.history.push("/authenticator");
+    }
+  }
+  //Sends delete request for specific item _id
+  async itemClick(e, i, id) {
+    e.preventDefault();
+    console.log(this.state.listId);
+    console.log(id);
+    if (i && id) {
+      await axios
+        .delete(
+          "/lists/" + this.state.listId,
+          {
+            headers: { Authorization: `Bearer ${this.access}` },
+          },
+          { itemId: id }
+        )
+        .then(async (res) => {
+          console.log(res.data.log);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   }
   //The rendering of the List components can be made into a separate function
