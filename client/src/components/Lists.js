@@ -126,19 +126,23 @@ class Lists extends React.Component {
     const name = e.target.name;
     const access = getAccess();
     if (access) {
+      //Makes post request to add new list if the name of triggered element name is listForm
       if (name === "listForm") {
-        const newList = this.state.listField.slice(0);
+        //Gets string from the list input field
+        const listName = this.state.listField.slice(0);
+        //Sends listName in a post request
         await axios
           .post(
             "/lists/",
-            { name: newList },
+            { name: listName },
             {
               headers: { Authorization: `Bearer ${access}` },
             }
           )
           .then(async (res) => {
-            //Creates copy of state.lists and adds the new one
+            //Creates copy of state.lists and adds the new list
             const newLists = [...this.state.lists, res.data.newList];
+            //Sets the new state values to reflect the change in the state
             this.setState({
               lists: newLists,
               listId: res.data.newList._id,
@@ -153,25 +157,30 @@ class Lists extends React.Component {
             this.props.history.push("/login");
           });
       }
+      //Makes post request to add new item if the name of triggered element name is itemForm
       if (name === "itemForm") {
-        const newItem = this.state.itemField.slice(0);
+        //Gets string from the item input field
+        const itemValue = this.state.itemField.slice(0);
+        //Sends itemValue in a post request
         await axios
           .post(
             `/lists/${this.state.listId}`,
-            { value: newItem },
+            { value: itemValue },
             {
               headers: { Authorization: `Bearer ${access}` },
             }
           )
           .then(async (res) => {
+            //Creates a copy of the listIndex.items to add the new item
             const newItems = [
               ...this.state.lists[this.state.listIndex].items,
               res.data.newItem,
             ];
-            console.log(newItems);
+            //Makes copy of existing lists in state
             const lists = [...this.state.lists];
+            //In the copy, goes to current listIndex and overrides its items with the newItems
             lists[this.state.listIndex].items = newItems;
-            console.log(lists);
+            //Sets the state to reflect these changes
             this.setState({
               lists: lists,
               items: newItems,
@@ -192,19 +201,26 @@ class Lists extends React.Component {
   //Sends delete request for specific item _id
   async itemClick(e, i, id) {
     e.preventDefault();
-    console.log(this.state.listId);
-    console.log(id);
-    if (i && id) {
+    if (this.state.listId && id) {
       await axios
-        .delete(
-          "/lists/" + this.state.listId,
-          {
-            headers: { Authorization: `Bearer ${this.access}` },
-          },
-          { itemId: id }
-        )
+        .delete("/lists/" + this.state.listId, {
+          headers: { Authorization: `Bearer ${this.access}` },
+          data: { itemId: id },
+        })
         .then(async (res) => {
-          console.log(res.data.log);
+          //Makes copy of existing lists in state
+          const lists = [...this.state.lists];
+          //Makes copy of existing items in that list
+          const items = lists[this.state.listIndex].items;
+          //Deletes the item at the specific item index
+          items.splice(i, 1);
+          //Overrides the copied indexed lists items
+          lists[this.state.listIndex].items = items;
+          //Sets the state to reflect the changes in lists and items
+          this.setState({
+            lists: lists,
+            items: items,
+          });
         })
         .catch((err) => {
           console.log(err);

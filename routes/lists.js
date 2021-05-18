@@ -68,14 +68,34 @@ router.post("/lists/:listId", auth, (req, res) => {
     res.status(422).send({ message: "unable to create: invalid item name" });
   }
 });
+//DELETE List
+router.delete("/lists/", auth, (req, res) => {
+  const listId = req.body.listId;
+  if (itemId !== "") {
+    User.updateOne(
+      { "lists._id": id },
+      { $pull: { _id: listId } },
+      (err, log) => {
+        if (err) {
+          res
+            .status(422)
+            .send({ message: "unable to delete: request error " + log });
+        }
+        res.status(202).send({ message: "deleted the list" });
+      }
+    );
+  } else {
+    res.status(422).send({ message: "unable to delete: request error" });
+  }
+});
 //DELETE item
 router.delete("/lists/:listId", auth, (req, res) => {
   const id = req.params.listId;
   const itemId = req.body.itemId;
-  if (itemId && listId) {
-    User.findOneAndRemove(
-      { "lists._id": id, "items._id": itemId },
-      { $pull: { "items.$._id": itemId } },
+  if (itemId !== "" && id !== "") {
+    User.updateOne(
+      { "lists._id": id },
+      { $pull: { "lists.$.items": { _id: itemId } } },
       (err, log) => {
         if (err) {
           res
