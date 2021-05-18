@@ -20,7 +20,7 @@ router.get("/me", auth, async (req, res) => {
     res.status(500).send({ message: "error in fetching user" });
   }
 });
-//POST list
+//POST (Create) list
 router.post("/lists/", auth, (req, res) => {
   const name = req.body.name;
   if (name && name !== "" && name.replace(/\s/g, "").length) {
@@ -44,7 +44,7 @@ router.post("/lists/", auth, (req, res) => {
     res.status(422).send({ message: "unable to create: invalid list name" });
   }
 });
-//POST item
+//POST (Create) item
 router.post("/lists/:listId", auth, (req, res) => {
   const id = req.params.listId;
   const value = req.body.value;
@@ -68,27 +68,57 @@ router.post("/lists/:listId", auth, (req, res) => {
     res.status(422).send({ message: "unable to create: invalid item name" });
   }
 });
-//DELETE List
-router.delete("/lists/", auth, (req, res) => {
-  const listId = req.body.listId;
+
+//PUT (Update) List
+router.put("/lists/", auth, (req, res) => {
+  const id = req.body.listId;
+  const listName = req.body.listName;
   if (itemId !== "") {
+    User.updateOne({ "lists._id": id }, { $set: { name: listName } }, (err) => {
+      if (err) {
+        res.status(422).send({ message: "unable to delete: request error " });
+      }
+      res.status(202).send({ message: "deleted the list" });
+    });
+  } else {
+    res.status(422).send({ message: "unable to delete: request error" });
+  }
+});
+//PUT (Update) Item
+router.put("/lists/:listId", auth, (req, res) => {
+  const id = req.params.listId;
+  //New Items
+  const items = req.body.items;
+  if (itemId !== "" && id !== "") {
     User.updateOne(
       { "lists._id": id },
-      { $pull: { _id: listId } },
-      (err, log) => {
+      { $set: { "lists.$.items": items } },
+      (err) => {
         if (err) {
-          res
-            .status(422)
-            .send({ message: "unable to delete: request error " + log });
+          res.status(422).send({ message: "unable to delete: request error " });
         }
-        res.status(202).send({ message: "deleted the list" });
+        res.status(204).send({ message: "updated list" });
       }
     );
   } else {
     res.status(422).send({ message: "unable to delete: request error" });
   }
 });
-//DELETE item
+//DELETE (Remove) List
+router.delete("/lists/", auth, (req, res) => {
+  const id = req.body.listId;
+  if (itemId !== "") {
+    User.updateOne({ "lists._id": id }, { $pull: { _id: id } }, (err) => {
+      if (err) {
+        res.status(422).send({ message: "unable to delete: request error " });
+      }
+      res.status(204).send({ message: "updated list" });
+    });
+  } else {
+    res.status(422).send({ message: "unable to delete: request error" });
+  }
+});
+//DELETE (Remove) item
 router.delete("/lists/:listId", auth, (req, res) => {
   const id = req.params.listId;
   const itemId = req.body.itemId;
@@ -96,11 +126,9 @@ router.delete("/lists/:listId", auth, (req, res) => {
     User.updateOne(
       { "lists._id": id },
       { $pull: { "lists.$.items": { _id: itemId } } },
-      (err, log) => {
+      (err) => {
         if (err) {
-          res
-            .status(422)
-            .send({ message: "unable to delete: request error " + log });
+          res.status(422).send({ message: "unable to delete: request error " });
         }
         res.status(202).send({ message: "deleted the item" });
       }

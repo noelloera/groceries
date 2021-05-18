@@ -1,8 +1,6 @@
 import {
-  getAccess,
   getRefresh,
-  clearAccess,
-  clearRefresh,
+
 } from "../helpers/jwt";
 import React from "react";
 import axios from "axios";
@@ -24,12 +22,12 @@ class Login extends React.Component {
       option: "login",
     };
   }
-
+//Obtains refresh and access
   componentDidMount() {
     const access = getRefresh();
     const refresh = getRefresh();
     if (access && refresh) {
-      this.props.history.push("/Lists/");
+      this.props.history.push("/Authenticator/");
     }
   }
 

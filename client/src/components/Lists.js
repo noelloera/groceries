@@ -23,6 +23,7 @@ class Lists extends React.Component {
   }
   //Helper function uses locally stored tokens to make secure axios calls
   async getLists() {
+    //Makes a get request to server for user data
     return await axios
       .get("/me", { headers: { Authorization: `Bearer ${this.access}` } })
       .then((res) => {
@@ -42,14 +43,16 @@ class Lists extends React.Component {
     await this.getLists().then((data) => {
       //Ternary operator if lists already exist
       data.lists.length
-        ? this.setState({
+        ? //If there is existing lists, they are set to the state
+          this.setState({
             username: data.username,
             listId: data.lists[0]._id,
             listIndex: 0,
             lists: data.lists,
             items: data.lists[0].items,
           })
-        : this.setState({
+        : //Else there is no lists and only the username sets, and list index is 0
+          this.setState({
             username: data.username,
             listIndex: 0,
           });
@@ -57,7 +60,6 @@ class Lists extends React.Component {
   }
   //Will update the state with new data
   async componentDidUpdate(prevProps, prevState) {
-    //Compare the previous to current state, should run periodically
     //Should also update the items in the current chosen list like listClick
     if (this.state.lists.length !== prevState.lists.length) {
       await this.getLists().then((data) => {
@@ -89,13 +91,24 @@ class Lists extends React.Component {
   renderLists() {
     return this.state.lists.map((list, i) => {
       return (
-        <Elem
-          key={list._id}
-          name={list.name}
-          onClick={(e) => {
-            this.listClick(e, i);
-          }}
-        />
+        <div>
+          <Elem
+            id={list._id}
+            key={list._id}
+            name={list.name}
+            onClick={(e) => {
+              this.listClick(e, i);
+            }}
+          />
+          <button
+            //Calls edit function provides event, index, list id, and id string
+            onClick={(e) => {
+              this.edit(e, i, list._id, "list");
+            }}
+          >
+            Edit Icon
+          </button>
+        </div>
       );
     });
   }
@@ -103,14 +116,24 @@ class Lists extends React.Component {
   renderItems() {
     return this.state.items.map((item, i) => {
       return (
-        <Elem
-          id={item._id}
-          key={item._id}
-          name={item.value}
-          onClick={(e, id) => {
-            this.itemClick(e, i, id);
-          }}
-        />
+        <div>
+          <Elem
+            id={item._id}
+            key={item._id}
+            name={item.value}
+            onClick={(e, id) => {
+              this.itemClick(e, i, id);
+            }}
+          />
+          <button
+            onClick={(e) => {
+              //Calls edit function provides event, index, list id, and id string
+              this.edit(e, i, item._id, "item");
+            }}
+          >
+            Edit Icon
+          </button>
+        </div>
       );
     });
   }
@@ -198,6 +221,9 @@ class Lists extends React.Component {
       this.props.history.push("/authenticator");
     }
   }
+  async edit(e, i, id, elemId) {
+    //conditional based on the elemId
+  }
   //Sends delete request for specific item _id
   async itemClick(e, i, id) {
     e.preventDefault();
@@ -224,6 +250,39 @@ class Lists extends React.Component {
         })
         .catch((err) => {
           console.log(err);
+          alert(err);
+        });
+    }
+  }
+  //Sends delete request for specific list _id
+  async listDelete(e, id, i) {
+    e.preventDefault();
+    if (i && id) {
+      await axios
+        .delete("/lists/", {
+          headers: { Authorization: `Bearer ${this.access}` },
+          data: { listId: id },
+        })
+        .then(async (res) => {
+          //Makes copy of existing lists in state
+          const lists = [...this.state.lists];
+          //Deletes the list at the provided index
+          lists.splice(i, 1);
+          //Makes sure the new list index is not less than 0
+          let newIndex = i - 1;
+          if (newIndex < 0) newIndex = 0;
+          //Overrides the copied indexed lists items
+          const items = lists[newIndex].items;
+          //Sets the state to reflect the changes in lists and items
+          this.setState({
+            lists: lists,
+            listIndex: newIndex,
+            items: items,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          alert(err);
         });
     }
   }
@@ -234,13 +293,13 @@ class Lists extends React.Component {
         {/*Displays the username with the first letter capitalized */}
         <h1>Hello {this.state.username},</h1>
         <button>+</button>
-
         <form
           name="listForm"
           onSubmit={(e) => {
             this.submit(e);
           }}
         >
+          <h1>LISTS</h1>
           {this.renderLists()}
           <InputField
             name="listField"
@@ -258,6 +317,7 @@ class Lists extends React.Component {
             this.submit(e);
           }}
         >
+          <h1>ITEMS</h1>
           {this.renderItems()}
           <InputField
             name="itemField"

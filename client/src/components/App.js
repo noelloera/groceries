@@ -12,10 +12,11 @@ export default class App extends React.Component {
     return (
       <BrowserRouter>
         <Switch>
+          {/*Login and Default path both route to the same component*/}
           <Route path="/" exact component={Login}></Route>
           <Route path="/login" exact component={Login}></Route>
-
           <Authenticator>
+            {/*Protected component, that only the Authenticator can route to*/}
             <Route path="/lists" component={Lists}></Route>
           </Authenticator>
         </Switch>
