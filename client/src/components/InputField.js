@@ -1,16 +1,23 @@
 import React from "react";
-
+import { TextField } from "@material-ui/core";
 const InputField = (props) => {
   return (
-    <input
+    <TextField
+      variant="outlined"
+      margin="normal"
+      required
+      fullWidth
+      id={props.id}
+      label={props.label}
       name={props.name}
-      placeholder={props.placeholder}
       type={props.type}
       value={props.value}
+      autoComplete={props.autoComplete}
+      autoFocus
       onChange={(e) => {
         props.onChange(e);
       }}
-    ></input>
+    ></TextField>
   );
 };
 export default InputField;

@@ -1,7 +1,4 @@
-import {
-  getRefresh,
-
-} from "../helpers/jwt";
+import { getRefresh } from "../helpers/jwt";
 import React from "react";
 import axios from "axios";
 import InputField from "./InputField";
@@ -9,6 +6,48 @@ import { withRouter } from "react-router-dom";
 //validators
 import passwordValidator from "password-validator";
 import emailValidator from "email-validator";
+import { Button, Typography } from "@material-ui/core";
+//Separate by material core imports
+import Grid from "@material-ui/core/Grid";
+import Link from "@material-ui/core/Link";
+//Learn why this react-redux works
+//import { connect } from "react-redux";
+//This and the propType requirement needed to work on HigherOrderComponents
+//import { makeStyles, withStyles } from "@material-ui/core/styles";
+//import PropTypes from "prop-types";
+
+/*const useStyles = makeStyles((theme) => ({
+  root: {
+    height: "100vh",
+  },
+  image: {
+    backgroundImage: "url(https://source.unsplash.com/random)",
+    backgroundRepeat: "no-repeat",
+    backgroundColor:
+      theme.palette.type === "light"
+        ? theme.palette.grey[50]
+        : theme.palette.grey[900],
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  },
+  paper: {
+    margin: theme.spacing(8, 4),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: "100%", // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+}));*/
 const password = new passwordValidator();
 password.is().min(6).is().max(18).has().digits(1).has().not().spaces();
 
@@ -22,7 +61,7 @@ class Login extends React.Component {
       option: "login",
     };
   }
-//Obtains refresh and access
+  //Obtains refresh and access
   componentDidMount() {
     const access = getRefresh();
     const refresh = getRefresh();
@@ -99,9 +138,11 @@ class Login extends React.Component {
       >
         {this.state.option === "signup" ? (
           <InputField
+            id="username"
+            label="Username"
             name="username"
-            placeholder="username"
             type="text"
+            autoComplete="name"
             value={this.state.username}
             onChange={(e) => {
               this.change(e);
@@ -110,31 +151,51 @@ class Login extends React.Component {
         ) : null}
 
         <InputField
+          id="email"
+          label="Email Address"
           name="email"
-          placeholder="email"
           type="text"
           value={this.state.email}
+          autoComplete="email"
           onChange={(e) => {
             this.change(e);
           }}
         ></InputField>
         <InputField
+          id="password"
+          label="Password"
           name="password"
-          placeholder="password"
           type="password"
           value={this.state.password}
+          autoComplete="current-password"
           onChange={(e) => {
             this.change(e);
           }}
         ></InputField>
-        <button>{this.state.option}</button>
-        <p
+        <Button type="submit" fullWidth variant="contained" color="primary">
+          {this.state.option}
+        </Button>
+        <Grid container>
+          <Grid item xs>
+            <Link href="#" variant="body2">
+              Forgot password?
+            </Link>
+          </Grid>
+          <Grid item>
+            <Link href="#" variant="body2">
+              {"Don't have an account? Sign Up"}
+            </Link>
+          </Grid>
+        </Grid>
+        <Typography
           onClick={(e) => {
             this.option(e);
           }}
         >
-          {this.state.option === "login" ? "signup" : "login"}
-        </p>
+          {this.state.option === "login"
+            ? "Don't have an account? Signup"
+            : "Already have an account? Log in!"}
+        </Typography>
       </form>
     );
   }
