@@ -181,21 +181,28 @@ class Login extends React.Component {
               Forgot password?
             </Link>
           </Grid>
-          <Grid item>
-            <Link href="#" variant="body2">
-              {"Don't have an account? Sign Up"}
-            </Link>
+          <Grid
+            style={{
+              cursor: "pointer",
+              hover: { textDecoration: "underline" },
+            }}
+            item
+            onClick={(e) => {
+              e.preventDefault();
+              this.option(e);
+            }}
+          >
+            {this.state.option === "login" ? (
+              <Typography color="primary">
+                Don't have an account? Signup
+              </Typography>
+            ) : (
+              <Typography color="primary">
+                Already have an account? Log in!
+              </Typography>
+            )}
           </Grid>
         </Grid>
-        <Typography
-          onClick={(e) => {
-            this.option(e);
-          }}
-        >
-          {this.state.option === "login"
-            ? "Don't have an account? Signup"
-            : "Already have an account? Log in!"}
-        </Typography>
       </form>
     );
   }
