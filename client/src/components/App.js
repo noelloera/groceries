@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 //Components
 //import SplashScreen from "./SplashScreen/SplashScreen.js";
@@ -7,18 +7,39 @@ import Authenticator from "./Authenticator.js";
 import Lists from "./Lists.js";
 //Material UI theming
 import { ThemeProvider } from "@material-ui/styles";
-import { createMuiTheme, Paper } from "@material-ui/core";
-import theme from "../helpers/theme.js";
+import { Paper } from "@material-ui/core";
+import lightTheme from "../helpers/lightTheme.js";
+import darkTheme from "../helpers/darkTheme.js";
 import MSwitch from "@material-ui/core/Switch";
 
 function App() {
-  const [darkMode, setDarkMode] = useState(false);
-  const darkTheme = createMuiTheme({
-    palette: { type: "dark" },
-  });
-  const lightTheme = createMuiTheme({});
+  const [darkMode, currentMode] = useState("light");
+  useEffect(() => {
+    const existingPreference = localStorage.getItem("theme");
+    if (existingPreference) {
+      existingPreference === "light"
+        ? currentMode("light")
+        : currentMode("dark");
+    } else {
+      currentMode("light");
+      localStorage.setItem("theme", "light");
+    }
+  }, []);
+
+  function handleThemeChange() {
+    if (currentMode === "light") {
+      localStorage.setItem("theme", "dark");
+      currentMode("dark");
+    }
+    if (currentMode === "dark") {
+      localStorage.setItem("theme", "dark");
+      currentMode("dark");
+    }
+  }
+
   return (
-    <ThemeProvider theme={theme}>
+    /*Added conditional dark theme setting */
+    <ThemeProvider theme={currentMode === "light" ? lightTheme : darkTheme}>
       <Paper>
         <BrowserRouter>
           <Switch>
@@ -32,8 +53,10 @@ function App() {
           </Switch>
         </BrowserRouter>
         <MSwitch
-          checked={darkMode}
-          onChange={() => setDarkMode(!darkMode)}
+          checked={currentMode === "light"}
+          onChange={() => {
+            handleThemeChange();
+          }}
         ></MSwitch>
       </Paper>
     </ThemeProvider>
