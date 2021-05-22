@@ -2,26 +2,51 @@ import { getRefresh } from "../helpers/jwt";
 import React from "react";
 import axios from "axios";
 import InputField from "./InputField";
-import { withRouter } from "react-router-dom";
 //validators
 import passwordValidator from "password-validator";
 import emailValidator from "email-validator";
-import { Button, Typography } from "@material-ui/core";
-//Separate by material core imports
-import Grid from "@material-ui/core/Grid";
-import Link from "@material-ui/core/Link";
+//Later separate these into individual imports
+import {
+  Button,
+  Box,
+  CssBaseline,
+  Typography,
+  Paper,
+  Grid,
+  Link,
+  Avatar,
+  FormControlLabel,
+  Checkbox,
+} from "@material-ui/core";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 //Learn why this react-redux works
 //import { connect } from "react-redux";
 //This and the propType requirement needed to work on HigherOrderComponents
-//import { makeStyles, withStyles } from "@material-ui/core/styles";
-//import PropTypes from "prop-types";
+import { withStyles } from "@material-ui/core/styles";
+//import useStyles from "../helpers/useStyles.js";
+import PropTypes from "prop-types";
+//Images
+import groceriesImg from "../assets/groceries.jpg"
 
-/*const useStyles = makeStyles((theme) => ({
-  root: {
+function Copyright() {
+  return (
+    <Typography variant="body2" color="textSecondary" align="center">
+      {"Copyright © "}
+      <Link color="inherit" href="/">
+        Groceries
+      </Link>{" "}
+      {new Date().getFullYear()}
+      {"."}
+    </Typography>
+  );
+}
+
+const styles = (theme) => ({
+  login: {
     height: "100vh",
   },
   image: {
-    backgroundImage: "url(https://source.unsplash.com/random)",
+    backgroundImage: `url(${groceriesImg})`,
     backgroundRepeat: "no-repeat",
     backgroundColor:
       theme.palette.type === "light"
@@ -31,14 +56,15 @@ import Link from "@material-ui/core/Link";
     backgroundPosition: "center",
   },
   paper: {
-    margin: theme.spacing(8, 4),
+    height: "100vh",
+    padding: "1rem",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: theme.palette.primary.main,
   },
   form: {
     width: "100%", // Fix IE 11 issue.
@@ -47,7 +73,7 @@ import Link from "@material-ui/core/Link";
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
-}));*/
+});
 const password = new passwordValidator();
 password.is().min(6).is().max(18).has().digits(1).has().not().spaces();
 
@@ -65,12 +91,13 @@ class Login extends React.Component {
   componentDidMount() {
     const access = getRefresh();
     const refresh = getRefresh();
-    //If both exists, Authenticator handles 
+    //If both exists, Authenticator handles
     if (access && refresh) {
       this.props.history.push("/Authenticator/");
     }
   }
 
+  //Sets the type of form by setting the state to either signup or login
   option(e) {
     e.preventDefault();
     this.state.option === "login"
@@ -78,6 +105,7 @@ class Login extends React.Component {
       : this.setState({ option: "login" });
   }
 
+  //Sets the value of the event target to the corresponding state
   change(e) {
     this.setState({
       [e.target.name]: e.target.value,
@@ -131,82 +159,126 @@ class Login extends React.Component {
     }
   }
   render() {
+    const { classes } = this.props;
     return (
-      <form
-        onSubmit={(e) => {
-          this.submit(e);
-        }}
-      >
-        {this.state.option === "signup" ? (
-          <InputField
-            id="username"
-            label="Username"
-            name="username"
-            type="text"
-            autoComplete="name"
-            value={this.state.username}
-            onChange={(e) => {
-              this.change(e);
-            }}
-          ></InputField>
-        ) : null}
-
-        <InputField
-          id="email"
-          label="Email Address"
-          name="email"
-          type="text"
-          value={this.state.email}
-          autoComplete="email"
-          onChange={(e) => {
-            this.change(e);
-          }}
-        ></InputField>
-        <InputField
-          id="password"
-          label="Password"
-          name="password"
-          type="password"
-          value={this.state.password}
-          autoComplete="current-password"
-          onChange={(e) => {
-            this.change(e);
-          }}
-        ></InputField>
-        <Button type="submit" fullWidth variant="contained" color="primary">
-          {this.state.option}
-        </Button>
-        <Grid container>
-          <Grid item xs>
-            <Link href="#" variant="body2">
-              Forgot password?
-            </Link>
-          </Grid>
+      <Grid container component="main" className={classes.root}>
+        <CssBaseline>
+          <Grid item xs={false} sm={4} md={7} className={classes.image} />
           <Grid
-            style={{
-              cursor: "pointer",
-              hover: { textDecoration: "underline" },
-            }}
             item
-            onClick={(e) => {
-              e.preventDefault();
-              this.option(e);
-            }}
+            xs={12}
+            sm={8}
+            md={5}
+            component={Paper}
+            elevation={6}
+            className={classes.paper}
           >
-            {this.state.option === "login" ? (
-              <Typography color="primary">
-                Don't have an account? Signup
+            <div className={classes.paper}>
+              {/*Icon */}
+              <Avatar className={classes.avatar}>
+                <LockOutlinedIcon />
+              </Avatar>
+              <Typography component="h1" variant="h5">
+                {this.state.option === "login" ? "Login" : "Sign Up"}
               </Typography>
-            ) : (
-              <Typography color="primary">
-                Already have an account? Log in!
-              </Typography>
-            )}
+              <form
+                className={classes.form}
+                onSubmit={(e) => {
+                  this.submit(e);
+                }}
+              >
+                {this.state.option === "signup" ? (
+                  <InputField
+                    id="username"
+                    label="Username"
+                    name="username"
+                    type="text"
+                    autoComplete="name"
+                    autoFocus={true}
+                    value={this.state.username}
+                    onChange={(e) => {
+                      this.change(e);
+                    }}
+                  ></InputField>
+                ) : null}
+
+                <InputField
+                  id="email"
+                  label="Email Address"
+                  name="email"
+                  type="text"
+                  value={this.state.email}
+                  autoComplete="email"
+                  autoFocus={true}
+                  onChange={(e) => {
+                    this.change(e);
+                  }}
+                ></InputField>
+                <InputField
+                  id="password"
+                  label="Password"
+                  name="password"
+                  type="password"
+                  value={this.state.password}
+                  autoComplete="current-password"
+                  onChange={(e) => {
+                    this.change(e);
+                  }}
+                ></InputField>
+                <FormControlLabel
+                  control={<Checkbox value="remember" color="primary" />}
+                  label="Remember me"
+                />
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                >
+                  {this.state.option === "login" ? "Login" : "Sign Up"}
+                </Button>
+                <Grid container>
+                  <Grid item xs>
+                    <Link href="#" variant="body2">
+                      Forgot password?
+                    </Link>
+                  </Grid>
+                  <Grid
+                    style={{
+                      cursor: "pointer",
+                      hover: { textDecoration: "underline" },
+                    }}
+                    item
+                    onClick={(e) => {
+                      e.preventDefault();
+                      this.option(e);
+                    }}
+                  >
+                    {this.state.option === "login" ? (
+                      <Typography color="primary">
+                        Don't have an account? Signup
+                      </Typography>
+                    ) : (
+                      <Typography color="primary">
+                        Already have an account? Log in!
+                      </Typography>
+                    )}
+                  </Grid>
+                </Grid>
+                <Box mt={5}>
+                  <Copyright />
+                </Box>
+              </form>
+            </div>
           </Grid>
-        </Grid>
-      </form>
+        </CssBaseline>
+      </Grid>
     );
   }
 }
 
-export default withRouter(Login);
+Login.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+//Got rid of withRouter
+export default withStyles(styles)(Login);

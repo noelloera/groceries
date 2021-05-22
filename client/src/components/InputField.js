@@ -13,7 +13,7 @@ const InputField = (props) => {
       type={props.type}
       value={props.value}
       autoComplete={props.autoComplete}
-      autoFocus
+      autoFocus={props.autoFocus}
       onChange={(e) => {
         props.onChange(e);
       }}

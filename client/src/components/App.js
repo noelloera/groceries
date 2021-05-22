@@ -11,10 +11,12 @@ import { Paper } from "@material-ui/core";
 import lightTheme from "../helpers/lightTheme.js";
 import darkTheme from "../helpers/darkTheme.js";
 import MSwitch from "@material-ui/core/Switch";
-
+import useStyles from "../helpers/useStyles";
 function App() {
   //useState needs an array of declarations, the second is a function that sets the first
   const [currentMode, setTheme] = useState("light");
+  //Calls external useStyles function
+  const classes = useStyles();
   //Will run before render and set the localStorage
   useEffect(() => {
     //Will retrieve saved localStorage variable if exists
@@ -48,7 +50,7 @@ function App() {
   return (
     /*Added conditional dark theme setting */
     <ThemeProvider theme={currentMode === "light" ? lightTheme : darkTheme}>
-      <Paper>
+      <Paper className={classes.app}>
         <BrowserRouter>
           <Switch>
             {/*Login and Default path both route to the same component*/}
