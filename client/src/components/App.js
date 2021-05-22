@@ -13,30 +13,38 @@ import darkTheme from "../helpers/darkTheme.js";
 import MSwitch from "@material-ui/core/Switch";
 
 function App() {
-  const [darkMode, currentMode] = useState("light");
+  //useState needs an array of declarations, the second is a function that sets the first
+  const [currentMode, setTheme] = useState("light");
+  //Will run before render and set the localStorage
   useEffect(() => {
-    const existingPreference = localStorage.getItem("theme");
-    if (existingPreference) {
-      existingPreference === "light"
-        ? currentMode("light")
-        : currentMode("dark");
+    //Will retrieve saved localStorage variable if exists
+    const savedTheme = localStorage.getItem("theme");
+    //Conditional will set state if client varaible exists
+    if (savedTheme) {
+      savedTheme === "light" ? setTheme("light") : setTheme("dark");
+      //If not then the default will be set to light
     } else {
-      currentMode("light");
+      setTheme("light");
       localStorage.setItem("theme", "light");
     }
   }, []);
-
+  //Switch component calls this onChange function
   function handleThemeChange() {
+    //Conditional that changes the localStorage variable and state to its opposite
     if (currentMode === "light") {
       localStorage.setItem("theme", "dark");
-      currentMode("dark");
+      setTheme("dark");
+      return;
     }
     if (currentMode === "dark") {
-      localStorage.setItem("theme", "dark");
-      currentMode("dark");
+      localStorage.setItem("theme", "light");
+      setTheme("light");
+      return;
     }
+    //If for some reason there is no currentMode then it is set to light as default
+    localStorage.setItem("theme", "light");
+    setTheme("light");
   }
-
   return (
     /*Added conditional dark theme setting */
     <ThemeProvider theme={currentMode === "light" ? lightTheme : darkTheme}>
@@ -53,8 +61,8 @@ function App() {
           </Switch>
         </BrowserRouter>
         <MSwitch
-          checked={currentMode === "light"}
-          onChange={() => {
+          checked={currentMode === "light" ? false : true}
+          onChange={(e) => {
             handleThemeChange();
           }}
         ></MSwitch>

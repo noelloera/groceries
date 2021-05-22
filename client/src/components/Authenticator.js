@@ -16,29 +16,36 @@ class Authenticator extends React.Component {
     };
     this.newAccess = this.newAccess.bind(this);
   }
-
+  //Will check if refreshe exists and is valid
   async newAccess(refresh) {
     if (refresh) {
       await axios
         .post("/token", { token: refresh })
+        //If the request passes, the new access is stored locally
         .then((res) => {
           localStorage.setItem("access", res.data.access);
+          //Will route to itself and in turn advance to Authenticate
           this.props.history.push("/login");
         })
+        //Errors will erase the stored refresh and route back to login
         .catch((err) => {
           console.log(err);
           clearRefresh();
           this.props.history.push("/login");
         });
+    } else {
+      this.props.history.push("/login");
     }
   }
-  //Work on the authenticated user mounting and routing accordingly
+  //Obtians locally stored access and refresh if they exist
   async componentDidMount() {
     const access = getAccess();
     const refresh = getRefresh();
+    //If there is a refresh but not an access the newAcess function is called
     if (!access && refresh) {
       await this.newAccess(refresh);
     }
+    //If both access and refresh exist, they are sent to server to check
     if (access && refresh) {
       await axios
         .get("/me", { headers: { Authorization: `Bearer ${access}` } })

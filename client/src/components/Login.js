@@ -61,10 +61,11 @@ class Login extends React.Component {
       option: "login",
     };
   }
-  //Obtains refresh and access
+  //Uses jwt.js helper functions to get locally stored access & refresh if exists
   componentDidMount() {
     const access = getRefresh();
     const refresh = getRefresh();
+    //If both exists, Authenticator handles 
     if (access && refresh) {
       this.props.history.push("/Authenticator/");
     }
