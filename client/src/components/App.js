@@ -8,15 +8,19 @@ import Lists from "./Lists.js";
 //Material UI theming
 import { ThemeProvider } from "@material-ui/styles";
 import { Paper } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
 import lightTheme from "../helpers/lightTheme.js";
 import darkTheme from "../helpers/darkTheme.js";
 import MSwitch from "@material-ui/core/Switch";
-import useStyles from "../helpers/useStyles";
+import styles from "../helpers/styles";
+import PropTypes from "prop-types";
+
 function App() {
   //useState needs an array of declarations, the second is a function that sets the first
   const [currentMode, setTheme] = useState("light");
   //Calls external useStyles function
-  const classes = useStyles();
+  //const classes = useStyles();
+  const classes = styles;
   //Will run before render and set the localStorage
   useEffect(() => {
     //Will retrieve saved localStorage variable if exists
@@ -72,4 +76,7 @@ function App() {
     </ThemeProvider>
   );
 }
-export default App;
+App.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+export default withStyles(styles, { withTheme: true })(App);

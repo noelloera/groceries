@@ -19,15 +19,14 @@ import {
   Checkbox,
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-//Learn why this react-redux works
-//import { connect } from "react-redux";
-//This and the propType requirement needed to work on HigherOrderComponents
+//withStyles takes in styles, and higher order component as arguments
 import { withStyles } from "@material-ui/core/styles";
-//import useStyles from "../helpers/useStyles.js";
+import styles from "../helpers/styles.jsx";
 import PropTypes from "prop-types";
-//Images
-import groceriesImg from "../assets/groceries.jpg"
-
+//Email and password validator
+const password = new passwordValidator();
+password.is().min(6).is().max(18).has().digits(1).has().not().spaces();
+//Application footer copyright function
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -40,43 +39,6 @@ function Copyright() {
     </Typography>
   );
 }
-
-const styles = (theme) => ({
-  login: {
-    height: "100vh",
-  },
-  image: {
-    backgroundImage: `url(${groceriesImg})`,
-    backgroundRepeat: "no-repeat",
-    backgroundColor:
-      theme.palette.type === "light"
-        ? theme.palette.grey[50]
-        : theme.palette.grey[900],
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-  },
-  paper: {
-    height: "100vh",
-    padding: "1rem",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.primary.main,
-  },
-  form: {
-    width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-});
-const password = new passwordValidator();
-password.is().min(6).is().max(18).has().digits(1).has().not().spaces();
-
 class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -281,4 +243,4 @@ Login.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 //Got rid of withRouter
-export default withStyles(styles)(Login);
+export default withStyles(styles, { withTheme: true })(Login);

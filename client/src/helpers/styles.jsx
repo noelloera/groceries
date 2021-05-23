@@ -1,6 +1,6 @@
-import { makeStyles } from "@material-ui/core/styles";
-//Start to move all the styling in here
-const useStyles = makeStyles((theme) => ({
+import groceriesImg from "../assets/groceries.jpg";
+//All of the component styling goes here
+const styles = (theme) => ({
   //App
   app: {
     height: "100vh",
@@ -10,6 +10,7 @@ const useStyles = makeStyles((theme) => ({
     height: "100vh",
   },
   image: {
+    backgroundImage: `url(${groceriesImg})`,
     backgroundRepeat: "no-repeat",
     backgroundColor:
       theme.palette.type === "light"
@@ -19,7 +20,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundPosition: "center",
   },
   paper: {
-    margin: theme.spacing(8, 4),
+    height: "100vh",
+    padding: "1rem",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -35,6 +37,5 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
-}));
-
-export default useStyles;
+});
+export default styles;
