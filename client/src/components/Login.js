@@ -19,6 +19,7 @@ import {
   Checkbox,
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import Switch from "@material-ui/core/Switch";
 //withStyles takes in styles, and higher order component as arguments
 import { withStyles } from "@material-ui/core/styles";
 import styles from "../helpers/styles.jsx";
@@ -137,6 +138,9 @@ class Login extends React.Component {
           >
             <div className={classes.paper}>
               {/*Icon */}
+              <Typography component="h1" variant="h5">
+                groceries
+              </Typography>
               <Avatar className={classes.avatar}>
                 <LockOutlinedIcon />
               </Avatar>
@@ -202,14 +206,10 @@ class Login extends React.Component {
                 <Grid container>
                   <Grid item xs>
                     <Link href="#" variant="body2">
-                      Forgot password?
+                      <Typography color="primary">Forgot password?</Typography>
                     </Link>
                   </Grid>
                   <Grid
-                    style={{
-                      cursor: "pointer",
-                      hover: { textDecoration: "underline" },
-                    }}
                     item
                     onClick={(e) => {
                       e.preventDefault();
@@ -217,17 +217,32 @@ class Login extends React.Component {
                     }}
                   >
                     {this.state.option === "login" ? (
-                      <Typography color="primary">
-                        Don't have an account? Signup
-                      </Typography>
+                      <Link href="#">
+                        <Typography color="primary">
+                          Don't have an account? Signup
+                        </Typography>
+                      </Link>
                     ) : (
-                      <Typography color="primary">
-                        Already have an account? Log in!
-                      </Typography>
+                      <Link href="#">
+                        <Typography color="primary">
+                          Already have an account? Log in!
+                        </Typography>
+                      </Link>
                     )}
                   </Grid>
                 </Grid>
                 <Box mt={5}>
+                  <Grid container>
+                    <Grid item xs>
+                      <Switch
+                        checked={this.props.checked}
+                        onChange={this.props.change}
+                      />
+                    </Grid>
+                    <Grid item>
+                      <Typography>Dark Mode?</Typography>
+                    </Grid>
+                  </Grid>
                   <Copyright />
                 </Box>
               </form>

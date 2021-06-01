@@ -11,7 +11,6 @@ import { Paper } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import lightTheme from "../helpers/lightTheme.js";
 import darkTheme from "../helpers/darkTheme.js";
-import MSwitch from "@material-ui/core/Switch";
 import styles from "../helpers/styles";
 import PropTypes from "prop-types";
 
@@ -41,8 +40,7 @@ function App() {
       localStorage.setItem("theme", "dark");
       setTheme("dark");
       return;
-    }
-    if (currentMode === "dark") {
+    }    if (currentMode === "dark") {
       localStorage.setItem("theme", "light");
       setTheme("light");
       return;
@@ -51,27 +49,34 @@ function App() {
     localStorage.setItem("theme", "light");
     setTheme("light");
   }
+  function checked() {
+    return currentMode === "light" ? false : true;
+  }
   return (
     /*Added conditional dark theme setting */
     <ThemeProvider theme={currentMode === "light" ? lightTheme : darkTheme}>
       <Paper className={classes.app}>
         <BrowserRouter>
           <Switch>
-            {/*Login and Default path both route to the same component*/}
-            <Route path="/" exact component={Login}></Route>
-            <Route path="/login" exact component={Login}></Route>
+            {/*Login and Default path both route to the same component*/}            <Route
+              path={["/", "/login"]}
+              exact
+              render={(props) => (
+                <Login
+                  {...props}
+                  checked={checked()}
+                  change={() => {
+                    handleThemeChange();
+                  }}
+                />
+              )}
+            />
             <Authenticator>
               {/*Protected component, that only the Authenticator can route to*/}
               <Route path="/lists" component={Lists}></Route>
             </Authenticator>
           </Switch>
         </BrowserRouter>
-        <MSwitch
-          checked={currentMode === "light" ? false : true}
-          onChange={(e) => {
-            handleThemeChange();
-          }}
-        ></MSwitch>
       </Paper>
     </ThemeProvider>
   );
