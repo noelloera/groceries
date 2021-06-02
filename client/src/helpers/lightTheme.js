@@ -9,6 +9,9 @@ const theme = createMuiTheme({
     //Variable that changes light and dark mode {outside event}
     primary: { main: "#ff5722", contrastText: "#ffffff" },
     secondary: { main: "#fff", contrastText: "#ffffff" },
+    background: {
+      default: "#000000",
+    },
   },
   typography: {
     fontFamily: "Almarai",

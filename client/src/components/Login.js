@@ -124,7 +124,7 @@ class Login extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <Grid container component="main" className={classes.root}>
+      <Grid container component="main" className={classes.login}>
         <CssBaseline>
           <Grid item xs={false} sm={4} md={7} className={classes.image} />
           <Grid
@@ -231,16 +231,20 @@ class Login extends React.Component {
                     )}
                   </Grid>
                 </Grid>
-                <Box mt={5}>
+                {/*Adds a Box container to set the margin*/}
+                <Box m={10}>
+                  {/*Grid container sets the items layout */}
                   <Grid container>
                     <Grid item xs>
+                      <Typography>
+                        {this.props.checked ? "Light " : "Dark "} Mode?
+                      </Typography>
+                    </Grid>
+                    <Grid item>
                       <Switch
                         checked={this.props.checked}
                         onChange={this.props.change}
                       />
-                    </Grid>
-                    <Grid item>
-                      <Typography>Dark Mode?</Typography>
                     </Grid>
                   </Grid>
                   <Copyright />

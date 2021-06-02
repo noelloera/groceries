@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const path = require("path");
-const PORT = process.env.PORT || 5000;
+const PORT = 5000; //Should be changed to local port 
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const user = require("./routes/user.js");

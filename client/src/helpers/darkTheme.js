@@ -9,6 +9,9 @@ const theme = createMuiTheme({
     type: "dark",
     primary: { main: "#ff5722", contrastText: "#ffffff" },
     secondary: { main: "#fff", contrastText: "#ffffff" },
+    background: {
+      default: "#000000",
+    },
   },
   typography: {
     fontFamily: "Almarai",

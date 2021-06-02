@@ -54,11 +54,16 @@ function App() {
   }
   return (
     /*Added conditional dark theme setting */
-    <ThemeProvider theme={currentMode === "light" ? lightTheme : darkTheme}>
-      <Paper className={classes.app}>
+    <ThemeProvider
+      theme={currentMode === "light" ? lightTheme : darkTheme}
+    >
+      <Paper
+        className={classes.app}
+      >
         <BrowserRouter>
           <Switch>
-            {/*Login and Default path both route to the same component*/}            <Route
+            {/*Login and Default path both route to the same component*/}{" "}
+            <Route
               path={["/", "/login"]}
               exact
               render={(props) => (
