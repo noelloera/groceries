@@ -9,8 +9,8 @@ import Lists from "./Lists.js";
 import { ThemeProvider } from "@material-ui/styles";
 import { Paper } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import lightTheme from "../helpers/lightTheme.js";
-import darkTheme from "../helpers/darkTheme.js";
+import { darkTheme, lightTheme } from "../helpers/themes.js";
+
 import styles from "../helpers/styles";
 import PropTypes from "prop-types";
 
@@ -40,7 +40,8 @@ function App() {
       localStorage.setItem("theme", "dark");
       setTheme("dark");
       return;
-    }    if (currentMode === "dark") {
+    }
+    if (currentMode === "dark") {
       localStorage.setItem("theme", "light");
       setTheme("light");
       return;
@@ -52,14 +53,14 @@ function App() {
   function checked() {
     return currentMode === "light" ? false : true;
   }
+
+  function getTheme() {
+    return currentMode === "light" ? lightTheme : darkTheme;
+  }
+
   return (
-    /*Added conditional dark theme setting */
-    <ThemeProvider
-      theme={currentMode === "light" ? lightTheme : darkTheme}
-    >
-      <Paper
-        className={classes.app}
-      >
+    <ThemeProvider theme={getTheme()}>
+      <Paper className={classes.app}>
         <BrowserRouter>
           <Switch>
             {/*Login and Default path both route to the same component*/}{" "}

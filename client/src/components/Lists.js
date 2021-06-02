@@ -3,7 +3,10 @@ import axios from "axios";
 import { getAccess, clearAccess } from "../helpers/jwt";
 import Elem from "./Elem.js";
 import InputField from "./InputField";
-import { withRouter } from "react-router-dom";
+import { withStyles } from "@material-ui/core/styles";
+import { Grid, Typography, CssBaseline, Paper } from "@material-ui/core";
+//styling for materialUI
+import styles from "../helpers/styles.jsx";
 
 class Lists extends React.Component {
   access = getAccess();
@@ -288,49 +291,84 @@ class Lists extends React.Component {
   }
   //The rendering of the List components can be made into a separate function
   render() {
+    const { classes } = this.props;
+
     return (
-      <div>
-        {/*Displays the username with the first letter capitalized */}
-        <h1>Hello {this.state.username},</h1>
-        <button>+</button>
-        <form
-          name="listForm"
-          onSubmit={(e) => {
-            this.submit(e);
-          }}
-        >
-          <h1>LISTS</h1>
-          {this.renderLists()}
-          <InputField
-            name="listField"
-            type="text"
-            value={this.state.listField}
-            onChange={(e) => {
-              this.change(e);
-            }}
-          />
-        </form>
-        <button>+</button>
-        <form
-          name="itemForm"
-          onSubmit={(e) => {
-            this.submit(e);
-          }}
-        >
-          <h1>ITEMS</h1>
-          {this.renderItems()}
-          <InputField
-            name="itemField"
-            type="text"
-            value={this.state.itemField}
-            onChange={(e) => {
-              this.change(e);
-            }}
-          />
-        </form>
-      </div>
+      <Grid
+        container
+        component="main"
+        className={classes.content}
+        justify="space-evenly"
+        spacing={5}
+      >
+        <CssBaseline>
+          {/*Displays the username with the first letter capitalized */}
+          <Grid
+            item
+            xs={12}
+            sm={8}
+            md={5}
+            component={Paper}
+            elevation={6}
+            className={classes.listsPaper}
+          >
+            <div className={classes.listsPaper}>
+              {/*Displays the username with the first letter capitalized */}
+              <Typography variant="h1">Hello {this.state.username},</Typography>
+              <form
+                name="listForm"
+                onSubmit={(e) => {
+                  this.submit(e);
+                }}
+              >
+                <button>+</button>
+                <Typography variant="h2">LISTS</Typography>
+                {this.renderLists()}
+                <InputField
+                  name="listField"
+                  type="text"
+                  value={this.state.listField}
+                  onChange={(e) => {
+                    this.change(e);
+                  }}
+                />
+              </form>
+            </div>
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            sm={8}
+            md={5}
+            component={Paper}
+            elevation={6}
+            className={classes.listsPaper}
+          >
+            <div className={classes.listsPaper}>
+              <form
+                name="itemForm"
+                onSubmit={(e) => {
+                  this.submit(e);
+                }}
+              >
+                <button>+</button>
+                <Typography variant="h2">ITEMS</Typography>
+                {this.renderItems()}
+                <InputField
+                  name="itemField"
+                  type="text"
+                  value={this.state.itemField}
+                  onChange={(e) => {
+                    this.change(e);
+                  }}
+                />
+              </form>
+            </div>
+          </Grid>
+        </CssBaseline>
+      </Grid>
     );
   }
 }
 
-export default withRouter(Lists);
+export default withStyles(styles, { withTheme: true })(Lists);

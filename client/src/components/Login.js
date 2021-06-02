@@ -126,7 +126,6 @@ class Login extends React.Component {
     return (
       <Grid container component="main" className={classes.login}>
         <CssBaseline>
-          <Grid item xs={false} sm={4} md={7} className={classes.image} />
           <Grid
             item
             xs={12}
@@ -138,7 +137,7 @@ class Login extends React.Component {
           >
             <div className={classes.paper}>
               {/*Icon */}
-              <Typography component="h1" variant="h5">
+              <Typography variant="h1">
                 groceries
               </Typography>
               <Avatar className={classes.avatar}>
@@ -203,14 +202,18 @@ class Login extends React.Component {
                 >
                   {this.state.option === "login" ? "Login" : "Sign Up"}
                 </Button>
-                <Grid container>
+                <Grid container justify="space-between">
                   <Grid item xs>
-                    <Link href="#" variant="body2">
-                      <Typography color="primary">Forgot password?</Typography>
+                    <Link href="#">
+                      <Typography color="primary" variant="caption">
+                        Forgot password?
+                      </Typography>
                     </Link>
                   </Grid>
                   <Grid
                     item
+                    xs
+                    justify="flex-end"
                     onClick={(e) => {
                       e.preventDefault();
                       this.option(e);
@@ -218,21 +221,31 @@ class Login extends React.Component {
                   >
                     {this.state.option === "login" ? (
                       <Link href="#">
-                        <Typography color="primary">
+                        <Typography
+                          inline
+                          color="primary"
+                          variant="caption"
+                          className={classes.option}
+                        >
                           Don't have an account? Signup
                         </Typography>
                       </Link>
                     ) : (
                       <Link href="#">
-                        <Typography color="primary">
+                        <Typography
+                          inline
+                          color="primary"
+                          variant="caption"
+                          className={classes.option}
+                        >
                           Already have an account? Log in!
                         </Typography>
                       </Link>
                     )}
                   </Grid>
                 </Grid>
-                {/*Adds a Box container to set the margin*/}
-                <Box m={10}>
+                {/*Adds a Box container to set the top margin*/}
+                <Box mt={1}>
                   {/*Grid container sets the items layout */}
                   <Grid container>
                     <Grid item xs>
@@ -252,6 +265,8 @@ class Login extends React.Component {
               </form>
             </div>
           </Grid>
+          {/*Adds the picture to fill in the remainder of the md and bigger screens */}
+          <Grid item xs={false} sm={false} md={6} className={classes.image} />
         </CssBaseline>
       </Grid>
     );
