@@ -3,9 +3,8 @@ import { TextField } from "@material-ui/core";
 const InputField = (props) => {
   return (
     <TextField
-      variant="outlined"
       margin="normal"
-      required
+      variant={props.variant}
       fullWidth
       id={props.id}
       label={props.label}
@@ -14,6 +13,7 @@ const InputField = (props) => {
       value={props.value}
       autoComplete={props.autoComplete}
       autoFocus={props.autoFocus}
+      required={props.required}
       onChange={(e) => {
         props.onChange(e);
       }}

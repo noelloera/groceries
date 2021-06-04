@@ -68,21 +68,22 @@ const styles = (theme) => ({
   content: {
     background: "rgba(0,0,0,1)",
     height: "100vh",
+    display: "flex",
+    alignItems: "center",
     [theme.breakpoints.down("md")]: {
       height: "87vh",
     },
+  },
 
-    listsPaper: {
-      height: "95vh",
-      padding: "1rem",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      borderRadius: "1em",
-      overflow: "scroll",
-      [theme.breakpoints.down("sm")]: {
-        height: "83vh",
-      },
+  listsPaper: {
+    height: "95vh",
+    padding: "1rem",
+    display: "flex",
+    flexDirection: "column",
+    borderRadius: "1em",
+    overflow: "scroll",
+    [theme.breakpoints.down("sm")]: {
+      height: "83vh",
     },
   },
 });

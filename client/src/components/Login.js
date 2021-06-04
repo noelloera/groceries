@@ -137,9 +137,7 @@ class Login extends React.Component {
           >
             <div className={classes.paper}>
               {/*Icon */}
-              <Typography variant="h1">
-                groceries
-              </Typography>
+              <Typography variant="h1">groceries</Typography>
               <Avatar className={classes.avatar}>
                 <LockOutlinedIcon />
               </Avatar>
@@ -159,6 +157,8 @@ class Login extends React.Component {
                     name="username"
                     type="text"
                     autoComplete="name"
+                    variant="outlined"
+                    required
                     autoFocus={true}
                     value={this.state.username}
                     onChange={(e) => {
@@ -174,6 +174,8 @@ class Login extends React.Component {
                   type="text"
                   value={this.state.email}
                   autoComplete="email"
+                  variant="outlined"
+                  required
                   autoFocus={true}
                   onChange={(e) => {
                     this.change(e);
@@ -184,6 +186,8 @@ class Login extends React.Component {
                   label="Password"
                   name="password"
                   type="password"
+                  variant="outlined"
+                  required
                   value={this.state.password}
                   autoComplete="current-password"
                   onChange={(e) => {

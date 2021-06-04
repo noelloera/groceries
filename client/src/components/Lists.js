@@ -312,26 +312,30 @@ class Lists extends React.Component {
             elevation={6}
             className={classes.listsPaper}
           >
+            <Typography variant="h1">Hello {this.state.username},</Typography>
             <div className={classes.listsPaper}>
               {/*Displays the username with the first letter capitalized */}
-              <Typography variant="h1">Hello {this.state.username},</Typography>
               <form
                 name="listForm"
+                className={classes.form}
                 onSubmit={(e) => {
                   this.submit(e);
                 }}
               >
-                <button>+</button>
-                <Typography variant="h2">LISTS</Typography>
-                {this.renderLists()}
                 <InputField
+                  label="Add a list..."
                   name="listField"
                   type="text"
+                  variant="standard"
+                  required
                   value={this.state.listField}
                   onChange={(e) => {
                     this.change(e);
                   }}
                 />
+                <button>+</button>
+                <Typography variant="h2">LISTS</Typography>
+                {this.renderLists()}
               </form>
             </div>
           </Grid>
@@ -347,6 +351,7 @@ class Lists extends React.Component {
             <div className={classes.listsPaper}>
               <form
                 name="itemForm"
+                className={classes.form}
                 onSubmit={(e) => {
                   this.submit(e);
                 }}
@@ -355,8 +360,11 @@ class Lists extends React.Component {
                 <Typography variant="h2">ITEMS</Typography>
                 {this.renderItems()}
                 <InputField
+                  label="Add an item..."
                   name="itemField"
                   type="text"
+                  variant="standard"
+                  required
                   value={this.state.itemField}
                   onChange={(e) => {
                     this.change(e);
