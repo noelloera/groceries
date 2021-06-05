@@ -322,6 +322,7 @@ class Lists extends React.Component {
                   this.submit(e);
                 }}
               >
+                <Typography variant="h2">LISTS</Typography>
                 <InputField
                   label="Add a list..."
                   name="listField"
@@ -334,7 +335,6 @@ class Lists extends React.Component {
                   }}
                 />
                 <button>+</button>
-                <Typography variant="h2">LISTS</Typography>
                 {this.renderLists()}
               </form>
             </div>
@@ -358,7 +358,6 @@ class Lists extends React.Component {
               >
                 <button>+</button>
                 <Typography variant="h2">ITEMS</Typography>
-                {this.renderItems()}
                 <InputField
                   label="Add an item..."
                   name="itemField"
@@ -370,6 +369,8 @@ class Lists extends React.Component {
                     this.change(e);
                   }}
                 />
+                <button>+</button>
+                {this.renderItems()}
               </form>
             </div>
           </Grid>
