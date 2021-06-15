@@ -6,6 +6,7 @@ const styles = (theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    maxWidth: "90%",
   },
   //Login edits entirety including the image in desktop
   login: {
@@ -17,6 +18,7 @@ const styles = (theme) => ({
     [theme.breakpoints.down("md")]: {
       height: "87vh",
     },
+    maxWidth: "90%",
   },
   image: {
     height: "95vh",
