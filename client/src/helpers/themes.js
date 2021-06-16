@@ -1,7 +1,8 @@
 import { createMuiTheme } from "@material-ui/core";
 //import desired fonts
 import "typeface-almarai";
-const defaultTheme = createMuiTheme({});
+//Uncomment when you need to use the theme props
+//const defaultTheme = createMuiTheme({});
 //Theme holds all app styling configurations
 const theme = {
   palette: {

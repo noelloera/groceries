@@ -3,7 +3,7 @@ import React from "react";
 import axios from "axios";
 import InputField from "./InputField";
 //validators
-import passwordValidator from "password-validator";
+import passValidator from "password-validator";
 import emailValidator from "email-validator";
 //Later separate these into individual imports
 import {
@@ -25,8 +25,8 @@ import { withStyles } from "@material-ui/core/styles";
 import styles from "../helpers/styles.jsx";
 import PropTypes from "prop-types";
 //Email and password validator
-const password = new passwordValidator();
-password.is().min(6).is().max(18).has().digits(1).has().not().spaces();
+const passwordValidator = new passValidator();
+passwordValidator.is().min(6).is().max(18).has().digits(1).has().not().spaces();
 //Application footer copyright function
 function Copyright() {
   return (
@@ -77,48 +77,68 @@ class Login extends React.Component {
   //Refactor this post request to only be one and change depending on the option being sent
   submit(e) {
     e.preventDefault();
-    //checks if the option is login and the email and password is valid
-    if (
-      this.state.option === "login" &&
-      emailValidator.validate(this.state.email) &&
-      password.validate(this.state.password)
-    ) {
-      axios
-        .post("/login", {
-          email: this.state.email,
-          password: this.state.password,
-        })
-        .then((res) => {
-          localStorage.setItem("access", res.data.access);
-          localStorage.setItem("refresh", res.data.refresh);
-          this.props.history.push("/lists");
-        })
-        .catch((err) => {
-          console.log(err);
-          this.props.history.go(0);
-        });
-    }
-    if (
-      this.state.option === "signup" &&
-      this.state.username &&
-      emailValidator.validate(this.state.email) &&
-      password.validate(this.state.password)
-    ) {
-      axios
-        .post("/signup", {
-          email: this.state.email,
-          password: this.state.password,
-          username: this.state.username,
-        })
-        .then((res) => {
-          localStorage.setItem("access", res.data.access);
-          localStorage.setItem("refresh", res.data.refresh);
-          this.props.history.push("/lists");
-        })
-        .catch((err) => {
-          console.log(err);
-          this.props.history.go(0);
-        });
+    //Creates copies of each of the values
+    let email = this.state.email.slice();
+    let password = this.state.password.slice();
+    let username = this.state.username.slice();
+    let option = this.state.option.slice();
+    //Email and Password Validator
+    let validEmail = emailValidator.validate(email);
+    let validPass = passwordValidator.validate(password);
+    if (validEmail && validPass) {
+      //Checks if login / signup as option
+      if (option === "login") {
+        //Makes axios request to login route
+        axios
+          .post("/login", {
+            email: email,
+            password: password,
+          })
+          .then((res) => {
+            localStorage.setItem("access", res.data.access);
+            localStorage.setItem("refresh", res.data.refresh);
+            this.props.history.push("/lists");
+          })
+          .catch((err) => {
+            console.log(err);
+            this.props.history.go(0);
+          });
+      }
+      if (option === "signup") {
+        //Makes axios request to signup route
+
+        axios
+          .post("/signup", {
+            email: email,
+            password: password,
+            username: username,
+          })
+          .then((res) => {
+            localStorage.setItem("access", res.data.access);
+            localStorage.setItem("refresh", res.data.refresh);
+            this.props.history.push("/lists");
+          })
+          .catch((err) => {
+            console.log(err);
+            this.props.history.go(0);
+          });
+      }
+    } else {
+      if (!validEmail) {
+        alert("Invalid Email / Password");
+        return;
+      }
+      if (!validPass) {
+        if (option === "login") {
+          alert("Invalid Email / Password");
+          return;
+        } else {
+          alert(
+            "Password must be minimum 6 characters, maximum 18. Must contain 1 digit and no spaces."
+          );
+          return;
+        }
+      }
     }
   }
   render() {
@@ -142,7 +162,7 @@ class Login extends React.Component {
                 <LockOutlinedIcon />
               </Avatar>
               <Typography component="h1" variant="h5">
-                {this.state.option === "login" ? "Login" : "Sign Up"}
+                {this.state.option === "login" ? "login" : "signup"}
               </Typography>
               <form
                 className={classes.form}

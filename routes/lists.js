@@ -22,8 +22,10 @@ router.get("/me", auth, async (req, res) => {
 });
 //POST (Create) list
 router.post("/lists/", auth, (req, res) => {
-  const name = req.body.name;
+  let name = req.body.name;
   if (name && name !== "" && name.replace(/\s/g, "").length) {
+    //Capitalizes the name of list
+    name = name.charAt(0).toUpperCase() + name.slice(1);
     const newList = new List({
       _id: new mongoose.Types.ObjectId(),
       name: name,
@@ -47,8 +49,10 @@ router.post("/lists/", auth, (req, res) => {
 //POST (Create) item
 router.post("/lists/:listId", auth, (req, res) => {
   const id = req.params.listId;
-  const value = req.body.value;
+  let value = req.body.value;
   if (value && value !== "" && value.replace(/\s/g, "").length) {
+    //Capitalizes the value of item
+    value = value.charAt(0).toUpperCase() + value.slice(1);
     const newItem = {
       _id: new mongoose.Types.ObjectId(),
       value: value,

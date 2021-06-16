@@ -356,7 +356,6 @@ class Lists extends React.Component {
                   this.submit(e);
                 }}
               >
-                <button>+</button>
                 <Typography variant="h2">ITEMS</Typography>
                 <InputField
                   label="Add an item..."

@@ -6,7 +6,6 @@ const styles = (theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    maxWidth: "90%",
   },
   //Login edits entirety including the image in desktop
   login: {
@@ -18,7 +17,6 @@ const styles = (theme) => ({
     [theme.breakpoints.down("md")]: {
       height: "87vh",
     },
-    maxWidth: "90%",
   },
   image: {
     height: "95vh",
@@ -31,11 +29,15 @@ const styles = (theme) => ({
     backgroundSize: "cover",
     backgroundPosition: "center",
     borderRadius: "1em",
+    //Sets the maximum resolutions for larger devices
+    maxWidth: "600px",
+    maxHeight: "1000px",
+
     [theme.breakpoints.down("sm")]: {
       display: "none",
     },
   },
-  //Form holds the grid that takes up 12 in xs
+  //Form holds the grid that takes up 12 on xs
 
   //Paper edits the actual form
   paper: {
@@ -46,6 +48,10 @@ const styles = (theme) => ({
     alignItems: "center",
     borderRadius: "1em",
     overflow: "scroll",
+    //Sets the maximum resolutions for larger devices
+    maxWidth: "600px",
+    maxHeight: "1000px",
+
     [theme.breakpoints.down("sm")]: {
       height: "83vh",
     },
