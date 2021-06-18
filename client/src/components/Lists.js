@@ -322,7 +322,7 @@ class Lists extends React.Component {
                   this.submit(e);
                 }}
               >
-                <Typography variant="h2">LISTS</Typography>
+                <Typography variant="h2">Lists: </Typography>
                 <InputField
                   label="Add a list..."
                   name="listField"
@@ -356,7 +356,7 @@ class Lists extends React.Component {
                   this.submit(e);
                 }}
               >
-                <Typography variant="h2">ITEMS</Typography>
+                <Typography variant="h2">Items: </Typography>
                 <InputField
                   label="Add an item..."
                   name="itemField"
