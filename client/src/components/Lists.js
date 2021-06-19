@@ -5,6 +5,7 @@ import Elem from "./Elem.js";
 import InputField from "./InputField";
 import { withStyles } from "@material-ui/core/styles";
 import { Grid, Typography, CssBaseline, Paper } from "@material-ui/core";
+import { Route } from "react-router-dom";
 //styling for materialUI
 import styles from "../helpers/styles.jsx";
 
@@ -292,17 +293,11 @@ class Lists extends React.Component {
   //The rendering of the List components can be made into a separate function
   render() {
     const { classes } = this.props;
-
     return (
-      <Grid
-        container
-        component="main"
-        className={classes.content}
-        justify="space-evenly"
-        spacing={5}
-      >
+      <Grid container component="main" className={classes.content}>
         <CssBaseline>
-          {/*Displays the username with the first letter capitalized */}
+          <Typography variant="h2">Hi {this.state.username},</Typography>
+          {/*Paper Component that renders the "Lists" */}
           <Grid
             item
             xs={12}
@@ -312,7 +307,6 @@ class Lists extends React.Component {
             elevation={6}
             className={classes.listsPaper}
           >
-            <Typography variant="h1">Hello {this.state.username},</Typography>
             <div className={classes.listsPaper}>
               {/*Displays the username with the first letter capitalized */}
               <form
@@ -322,7 +316,7 @@ class Lists extends React.Component {
                   this.submit(e);
                 }}
               >
-                <Typography variant="h2">Lists: </Typography>
+                <Typography variant="h2">My Lists: </Typography>
                 <InputField
                   label="Add a list..."
                   name="listField"
@@ -338,6 +332,7 @@ class Lists extends React.Component {
                 {this.renderLists()}
               </form>
             </div>
+            {/*Should contain the route to the rendered component, onClick a list should route*/}
           </Grid>
           <Grid
             item

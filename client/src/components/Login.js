@@ -144,7 +144,7 @@ class Login extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <Grid container component="main" className={classes.login}>
+      <Grid container component="main" className={classes.content}>
         <CssBaseline>
           <Grid
             item

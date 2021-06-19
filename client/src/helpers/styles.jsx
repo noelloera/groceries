@@ -1,17 +1,13 @@
 import groceriesImg from "../assets/groceries.jpg";
 //All of the component styling goes here
 const styles = (theme) => ({
-  app: {
-    height: "100vh",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
+
   //Login edits entirety including the image in desktop
-  login: {
+  content: {
     background: "rgba(0,0,0,1)",
     height: "100vh",
     display: "flex",
+    flexDirection:"column",
     justifyContent: "center",
     alignItems: "center",
     [theme.breakpoints.down("md")]: {
@@ -70,17 +66,6 @@ const styles = (theme) => ({
   option: {
     float: "right",
     textAlign: "right",
-  },
-
-  //Lists
-  content: {
-    background: "rgba(0,0,0,1)",
-    height: "100vh",
-    display: "flex",
-    alignItems: "center",
-    [theme.breakpoints.down("md")]: {
-      height: "87vh",
-    },
   },
 
   listsPaper: {
