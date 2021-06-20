@@ -1,13 +1,18 @@
 import groceriesImg from "../assets/groceries.jpg";
 //All of the component styling goes here
 const styles = (theme) => ({
-
+  app: {
+    height: "100vh",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   //Login edits entirety including the image in desktop
   content: {
     background: "rgba(0,0,0,1)",
     height: "100vh",
     display: "flex",
-    flexDirection:"column",
+    flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     [theme.breakpoints.down("md")]: {
