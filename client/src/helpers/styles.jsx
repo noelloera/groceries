@@ -1,18 +1,11 @@
 import groceriesImg from "../assets/groceries.jpg";
 //All of the component styling goes here
 const styles = (theme) => ({
-  app: {
-    height: "100vh",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
   //Login edits entirety including the image in desktop
   content: {
     background: "rgba(0,0,0,1)",
     height: "100vh",
     display: "flex",
-    flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     [theme.breakpoints.down("md")]: {
@@ -38,8 +31,6 @@ const styles = (theme) => ({
       display: "none",
     },
   },
-  //Form holds the grid that takes up 12 on xs
-
   //Paper edits the actual form
   paper: {
     height: "95vh",

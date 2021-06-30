@@ -5,9 +5,10 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { User, List, Item, mongoose } = require("../database/models/User.js");
 
+//Signs the payload with the secret access token for limited time
 getAccessToken = (payload) => {
   return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "30m",
+    //expiresIn: "30m",
   });
 };
 
