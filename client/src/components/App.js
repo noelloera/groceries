@@ -61,7 +61,32 @@ function App() {
   }
 
   return (
-      <Items></Items>
+    <ThemeProvider theme={getTheme()}>
+      <Paper className={classes.app}>
+        <BrowserRouter>
+          <Switch>
+            {/*Login and Default path both route to the same component*/}{" "}
+            <Route
+              path={["/", "/login"]}
+              exact
+              render={(props) => (
+                <Login
+                  {...props}
+                  checked={checked()}
+                  change={() => {
+                    handleThemeChange();
+                  }}
+                />
+              )}
+            />
+            <Authenticator>
+              {/*Protected component, that only the Authenticator can route to*/}
+              <Route path="/lists" component={Lists}></Route>
+            </Authenticator>
+          </Switch>
+        </BrowserRouter>
+      </Paper>
+    </ThemeProvider>
   );
 }
 App.propTypes = {

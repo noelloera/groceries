@@ -5,10 +5,15 @@ import Elem from "./Elem.js";
 import InputField from "./InputField";
 import { withStyles } from "@material-ui/core/styles";
 import { Grid, Typography, CssBaseline, Paper } from "@material-ui/core";
+//React Router
 import { Route } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom/BrowserRouter";
+import { withRouter } from "react-router-dom";
+import Redirect from "react-router-dom/Redirect";
 //styling for materialUI
 import styles from "../helpers/styles.jsx";
-
+//Imports the items component
+import Items from "./Items";
 class Lists extends React.Component {
   access = getAccess();
   constructor(props) {
@@ -90,6 +95,8 @@ class Lists extends React.Component {
       listId: this.state.lists[i]._id,
       listIndex: i,
     });
+    //Should instead route to Items within that list
+    this.props.history.push("/lists/items");
   }
   //Renders by mapping each of the existing list objects
   renderLists() {
@@ -296,7 +303,6 @@ class Lists extends React.Component {
     return (
       <Grid container component="main" className={classes.content}>
         <CssBaseline>
-          <Typography variant="h2">Hi {this.state.username},</Typography>
           {/*Paper Component that renders the "Lists" */}
           <Grid
             item
@@ -316,6 +322,8 @@ class Lists extends React.Component {
                   this.submit(e);
                 }}
               >
+                <Typography variant="h2">Hi {this.state.username},</Typography>
+
                 <Typography variant="h2">My Lists: </Typography>
                 <InputField
                   label="Add a list..."
@@ -334,44 +342,16 @@ class Lists extends React.Component {
             </div>
             {/*Should contain the route to the rendered component, onClick a list should route*/}
           </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={8}
-            md={5}
-            component={Paper}
-            elevation={6}
-            className={classes.listsPaper}
-          >
-            <div className={classes.listsPaper}>
-              <form
-                name="itemForm"
-                className={classes.form}
-                onSubmit={(e) => {
-                  this.submit(e);
-                }}
-              >
-                <Typography variant="h2">Items: </Typography>
-                <InputField
-                  label="Add an item..."
-                  name="itemField"
-                  type="text"
-                  variant="standard"
-                  required
-                  value={this.state.itemField}
-                  onChange={(e) => {
-                    this.change(e);
-                  }}
-                />
-                <button>+</button>
-                {this.renderItems()}
-              </form>
-            </div>
-          </Grid>
+          <Route
+            path={"/lists/items"}
+            render={(props) => (
+              <Items {...props} renderItems={this.renderItems()}></Items>
+            )}
+          ></Route>
         </CssBaseline>
       </Grid>
     );
   }
 }
 
-export default withStyles(styles, { withTheme: true })(Lists);
+export default withRouter(withStyles(styles, { withTheme: true })(Lists));
