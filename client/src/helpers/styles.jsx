@@ -71,6 +71,9 @@ const styles = (theme) => ({
     flexDirection: "column",
     borderRadius: "1em",
     overflow: "scroll",
+    //Sets the maximum resolutions for larger devices
+    maxWidth: "600px",
+    maxHeight: "1000px",
     [theme.breakpoints.down("sm")]: {
       height: "83vh",
     },

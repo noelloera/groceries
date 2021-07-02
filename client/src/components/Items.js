@@ -4,22 +4,15 @@ import InputField from "./InputField";
 import { withStyles } from "@material-ui/core/styles";
 import { withRouter } from "react-router-dom";
 
-import { Grid, Typography, CssBaseline, Paper } from "@material-ui/core";
+import { Grid, Typography, Paper } from "@material-ui/core";
 //Holds styling
 import styles from "../helpers/styles.jsx";
 
 class Items extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      itemField: "",
-    };
-  }
   render() {
     const { classes } = this.props;
-      return (
-      <Grid container component="main" className={classes.content}>
-        <CssBaseline>
+    return (
+
           <Grid
             item
             xs={12}
@@ -34,7 +27,8 @@ class Items extends React.Component {
                 name="itemForm"
                 className={classes.form}
                 onSubmit={(e) => {
-                  this.submit(e);
+                  e.preventDefault();
+                  this.props.submit(e);
                 }}
               >
                 <Typography variant="h2">Items: </Typography>
@@ -44,9 +38,8 @@ class Items extends React.Component {
                   type="text"
                   variant="standard"
                   required
-                  value={this.state.itemField}
                   onChange={(e) => {
-                    this.change(e);
+                    this.props.change(e);
                   }}
                 />
                 <button>+</button>
@@ -54,8 +47,6 @@ class Items extends React.Component {
               </form>
             </div>
           </Grid>
-        </CssBaseline>
-      </Grid>
     );
   }
 }

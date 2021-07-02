@@ -5,8 +5,6 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Login from "./Login";
 import Authenticator from "./Authenticator.js";
 import Lists from "./Lists.js";
-import Items from "./Items.js";
-
 //Material UI theming
 import { ThemeProvider } from "@material-ui/styles";
 import { Paper } from "@material-ui/core";

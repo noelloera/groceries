@@ -7,9 +7,7 @@ import { withStyles } from "@material-ui/core/styles";
 import { Grid, Typography, CssBaseline, Paper } from "@material-ui/core";
 //React Router
 import { Route } from "react-router-dom";
-import { BrowserRouter } from "react-router-dom/BrowserRouter";
 import { withRouter } from "react-router-dom";
-import Redirect from "react-router-dom/Redirect";
 //styling for materialUI
 import styles from "../helpers/styles.jsx";
 //Imports the items component
@@ -21,6 +19,7 @@ class Lists extends React.Component {
     this.state = {
       listField: "",
       itemField: "",
+      listView: true,
       listId: null,
       listIndex: 0,
       username: null,
@@ -29,6 +28,10 @@ class Lists extends React.Component {
     };
     this.getLists = this.getLists.bind(this);
     this.itemClick = this.itemClick.bind(this);
+    this.renderItems = this.renderItems.bind(this);
+    this.renderLists = this.renderLists.bind(this);
+    this.change = this.change.bind(this);
+    this.submit = this.submit.bind(this);
   }
   //Helper function uses locally stored tokens to make secure axios calls
   async getLists() {
@@ -91,10 +94,12 @@ class Lists extends React.Component {
     e.preventDefault();
     //Sets the items to the current items
     this.setState({
+      listView: false,
       items: this.state.lists[i].items,
       listId: this.state.lists[i]._id,
       listIndex: i,
     });
+    console.log(this.state.items);
     //Should instead route to Items within that list
     this.props.history.push("/lists/items");
   }
@@ -125,28 +130,32 @@ class Lists extends React.Component {
   }
   //Renders by mapping each of the item objects of active listId
   renderItems() {
-    return this.state.items.map((item, i) => {
-      return (
-        <div>
-          <Elem
-            id={item._id}
-            key={item._id}
-            name={item.value}
-            onClick={(e, id) => {
-              this.itemClick(e, i, id);
-            }}
-          />
-          <button
-            onClick={(e) => {
-              //Calls edit function provides event, index, list id, and id string
-              this.edit(e, i, item._id, "item");
-            }}
-          >
-            Edit Icon
-          </button>
-        </div>
-      );
-    });
+    if (this.state.items) {
+      return this.state.items.map((item, i) => {
+        return (
+          <div>
+            <Elem
+              id={item._id}
+              key={item._id}
+              name={item.value}
+              onClick={(e, id) => {
+                this.itemClick(e, i, id);
+              }}
+            />
+            <button
+              onClick={(e) => {
+                //Calls edit function provides event, index, list id, and id string
+                this.edit(e, i, item._id, "item");
+              }}
+            >
+              Edit Icon
+            </button>
+          </div>
+        );
+      });
+    } else {
+      return;
+    }
   }
   //Sets the state by the name of the field
   change(e) {
@@ -304,48 +313,58 @@ class Lists extends React.Component {
       <Grid container component="main" className={classes.content}>
         <CssBaseline>
           {/*Paper Component that renders the "Lists" */}
-          <Grid
-            item
-            xs={12}
-            sm={8}
-            md={5}
-            component={Paper}
-            elevation={6}
-            className={classes.listsPaper}
-          >
-            <div className={classes.listsPaper}>
-              {/*Displays the username with the first letter capitalized */}
-              <form
-                name="listForm"
-                className={classes.form}
-                onSubmit={(e) => {
-                  this.submit(e);
-                }}
-              >
-                <Typography variant="h2">Hi {this.state.username},</Typography>
-
-                <Typography variant="h2">My Lists: </Typography>
-                <InputField
-                  label="Add a list..."
-                  name="listField"
-                  type="text"
-                  variant="standard"
-                  required
-                  value={this.state.listField}
-                  onChange={(e) => {
-                    this.change(e);
+          {this.state.listView ? (
+            <Grid
+              item
+              xs={12}
+              sm={8}
+              md={5}
+              component={Paper}
+              elevation={6}
+              className={classes.listsPaper}
+            >
+              <div className={classes.listsPaper}>
+                {/*Displays the username with the first letter capitalized */}
+                <form
+                  name="listForm"
+                  className={classes.form}
+                  onSubmit={(e) => {
+                    this.submit(e);
                   }}
-                />
-                <button>+</button>
-                {this.renderLists()}
-              </form>
-            </div>
-            {/*Should contain the route to the rendered component, onClick a list should route*/}
-          </Grid>
+                >
+                  <Typography variant="h2">
+                    Hi {this.state.username},
+                  </Typography>
+
+                  <Typography variant="h2">My Lists: </Typography>
+                  <InputField
+                    label="Add a list..."
+                    name="listField"
+                    type="text"
+                    variant="standard"
+                    required
+                    value={this.state.listField}
+                    onChange={(e) => {
+                      this.change(e);
+                    }}
+                  />
+                  <button>+</button>
+                  {this.renderLists()}
+                </form>
+              </div>
+              {/*Should contain the route to the rendered component, onClick a list should route*/}
+            </Grid>
+          ) : null}
           <Route
             path={"/lists/items"}
             render={(props) => (
-              <Items {...props} renderItems={this.renderItems()}></Items>
+              <Items
+                {...props}
+                items={[...this.state.items]}
+                change={this.change}
+                submit={this.submit}
+                renderItems={this.renderItems}
+              ></Items>
             )}
           ></Route>
         </CssBaseline>
