@@ -21,7 +21,6 @@ app.use(user);
 app.use(lists);
 
 app.get("/", (req, res) => {
-  res.status(200).send({ message: "API working" });
 });
 /* This will be for the production build
 
