@@ -4,7 +4,7 @@ import InputField from "./InputField";
 import { withStyles } from "@material-ui/core/styles";
 import { withRouter } from "react-router-dom";
 
-import { Grid, Typography, Paper } from "@material-ui/core";
+import { Grid, Typography, Paper, Button } from "@material-ui/core";
 //Holds styling
 import styles from "../helpers/styles.jsx";
 
@@ -12,7 +12,6 @@ class Items extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-
           <Grid
             item
             xs={12}
@@ -31,6 +30,11 @@ class Items extends React.Component {
                   this.props.submit(e);
                 }}
               >
+              <Button onClick={(e)=>{
+                this.props.goBack(e)
+              }
+
+              }>BACK</Button>
                 <Typography variant="h2">Items: </Typography>
                 <InputField
                   label="Add an item..."

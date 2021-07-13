@@ -37,8 +37,7 @@ function App() {
   function handleThemeChange() {
     //Conditional that changes the localStorage variable and state to its opposite
     if (currentMode === "light") {
-      localStorage.setItem("theme", "dark")\
-      =======ADS589
+      localStorage.setItem("theme", "dark")
       setTheme("dark");
       return;
     }

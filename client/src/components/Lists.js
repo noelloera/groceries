@@ -32,6 +32,8 @@ class Lists extends React.Component {
     this.renderLists = this.renderLists.bind(this);
     this.change = this.change.bind(this);
     this.submit = this.submit.bind(this);
+    this.goBack = this.goBack.bind(this);
+
   }
   //Helper function uses locally stored tokens to make secure axios calls
   async getLists() {
@@ -244,6 +246,11 @@ class Lists extends React.Component {
   async edit(e, i, id, elemId) {
     //conditional based on the elemId
   }
+  goBack(e){
+    e.preventDefault();
+    this.props.history.push("/lists");
+
+  }
   //Sends delete request for specific item _id
   async itemClick(e, i, id) {
     e.preventDefault();
@@ -355,6 +362,7 @@ class Lists extends React.Component {
               {/*Should contain the route to the rendered component, onClick a list should route*/}
             </Grid>
           ) : null}
+          {/*The inside of this route should just be a component that should switch*/}
           <Route
             path={"/lists/items"}
             render={(props) => (
@@ -364,6 +372,7 @@ class Lists extends React.Component {
                 change={this.change}
                 submit={this.submit}
                 renderItems={this.renderItems}
+                goBack={this.goBack}
               ></Items>
             )}
           ></Route>
