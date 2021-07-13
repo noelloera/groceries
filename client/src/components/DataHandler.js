@@ -1,25 +1,19 @@
 import React from "react";
 import axios from "axios";
 import { getAccess, clearAccess } from "../helpers/jwt";
-import Elem from "./Elem.js";
-import InputField from "./InputField";
-import { withStyles } from "@material-ui/core/styles";
-import { Grid, Typography, CssBaseline, Paper } from "@material-ui/core";
+import Elem from "./ListedElement.js";
 //React Router
-import { Route } from "react-router-dom";
 import { withRouter } from "react-router-dom";
-//styling for materialUI
-import styles from "../helpers/styles.jsx";
 //Imports the items component
-import Items from "./Items";
-class Lists extends React.Component {
+import ListsAndItems from "./ContentDisplay";
+class DataHandler extends React.Component {
   access = getAccess();
   constructor(props) {
     super(props);
     this.state = {
       listField: "",
       itemField: "",
-      listView: true,
+      isList: true,
       listId: null,
       listIndex: 0,
       username: null,
@@ -28,12 +22,11 @@ class Lists extends React.Component {
     };
     this.getLists = this.getLists.bind(this);
     this.itemClick = this.itemClick.bind(this);
-    this.renderItems = this.renderItems.bind(this);
-    this.renderLists = this.renderLists.bind(this);
+    this.listClick = this.listClick.bind(this);
+    this.renderAll = this.renderAll.bind(this);
     this.change = this.change.bind(this);
     this.submit = this.submit.bind(this);
     this.goBack = this.goBack.bind(this);
-
   }
   //Helper function uses locally stored tokens to make secure axios calls
   async getLists() {
@@ -96,69 +89,29 @@ class Lists extends React.Component {
     e.preventDefault();
     //Sets the items to the current items
     this.setState({
-      listView: false,
+      isList: false,
       items: this.state.lists[i].items,
       listId: this.state.lists[i]._id,
       listIndex: i,
     });
-    console.log(this.state.items);
-    //Should instead route to Items within that list
-    this.props.history.push("/lists/items");
   }
   //Renders by mapping each of the existing list objects
-  renderLists() {
-    return this.state.lists.map((list, i) => {
+  renderAll() {
+    const isList = this.state.isList;
+    const type = isList ? this.state.lists : this.state.items;
+    return type.map((item, i) => {
       return (
-        <div>
-          <Elem
-            id={list._id}
-            key={list._id}
-            name={list.name}
-            onClick={(e) => {
-              this.listClick(e, i);
-            }}
-          />
-          <button
-            //Calls edit function provides event, index, list id, and id string
-            onClick={(e) => {
-              this.edit(e, i, list._id, "list");
-            }}
-          >
-            Edit Icon
-          </button>
-        </div>
+        <Elem
+          id={item._id}
+          index={i}
+          name={isList ? item.name : item.value}
+          onClick={isList ? this.listClick : this.itemClick}
+          isList={this.state.isList}
+        />
       );
     });
   }
-  //Renders by mapping each of the item objects of active listId
-  renderItems() {
-    if (this.state.items) {
-      return this.state.items.map((item, i) => {
-        return (
-          <div>
-            <Elem
-              id={item._id}
-              key={item._id}
-              name={item.value}
-              onClick={(e, id) => {
-                this.itemClick(e, i, id);
-              }}
-            />
-            <button
-              onClick={(e) => {
-                //Calls edit function provides event, index, list id, and id string
-                this.edit(e, i, item._id, "item");
-              }}
-            >
-              Edit Icon
-            </button>
-          </div>
-        );
-      });
-    } else {
-      return;
-    }
-  }
+
   //Sets the state by the name of the field
   change(e) {
     this.setState({
@@ -246,10 +199,11 @@ class Lists extends React.Component {
   async edit(e, i, id, elemId) {
     //conditional based on the elemId
   }
-  goBack(e){
+  goBack(e) {
     e.preventDefault();
-    this.props.history.push("/lists");
-
+    this.setState({
+      isList: true,
+    });
   }
   //Sends delete request for specific item _id
   async itemClick(e, i, id) {
@@ -314,72 +268,22 @@ class Lists extends React.Component {
     }
   }
   //The rendering of the List components can be made into a separate function
+  /* Add the listname to the rendered comp to display on top
+        listName={this.state.lists[this.state.listIndex].name}*/
   render() {
-    const { classes } = this.props;
+    const isList = this.state.isList;
     return (
-      <Grid container component="main" className={classes.content}>
-        <CssBaseline>
-          {/*Paper Component that renders the "Lists" */}
-          {this.state.listView ? (
-            <Grid
-              item
-              xs={12}
-              sm={8}
-              md={5}
-              component={Paper}
-              elevation={6}
-              className={classes.listsPaper}
-            >
-              <div className={classes.listsPaper}>
-                {/*Displays the username with the first letter capitalized */}
-                <form
-                  name="listForm"
-                  className={classes.form}
-                  onSubmit={(e) => {
-                    this.submit(e);
-                  }}
-                >
-                  <Typography variant="h2">
-                    Hi {this.state.username},
-                  </Typography>
-
-                  <Typography variant="h2">My Lists: </Typography>
-                  <InputField
-                    label="Add a list..."
-                    name="listField"
-                    type="text"
-                    variant="standard"
-                    required
-                    value={this.state.listField}
-                    onChange={(e) => {
-                      this.change(e);
-                    }}
-                  />
-                  <button>+</button>
-                  {this.renderLists()}
-                </form>
-              </div>
-              {/*Should contain the route to the rendered component, onClick a list should route*/}
-            </Grid>
-          ) : null}
-          {/*The inside of this route should just be a component that should switch*/}
-          <Route
-            path={"/lists/items"}
-            render={(props) => (
-              <Items
-                {...props}
-                items={[...this.state.items]}
-                change={this.change}
-                submit={this.submit}
-                renderItems={this.renderItems}
-                goBack={this.goBack}
-              ></Items>
-            )}
-          ></Route>
-        </CssBaseline>
-      </Grid>
+      <ListsAndItems
+        username={this.state.username}
+        change={this.change}
+        submit={this.submit}
+        goBack={this.goBack}
+        value={isList ? this.state.listField : this.state.itemField}
+        renderAll={this.renderAll}
+        isList={this.state.isList}
+      />
     );
   }
 }
 
-export default withRouter(withStyles(styles, { withTheme: true })(Lists));
+export default withRouter(DataHandler);

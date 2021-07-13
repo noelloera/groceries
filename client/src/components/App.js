@@ -4,7 +4,7 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 //import SplashScreen from "./SplashScreen/SplashScreen.js";
 import Login from "./Login";
 import Authenticator from "./Authenticator.js";
-import Lists from "./Lists.js";
+import DataHandler from "./DataHandler";
 //Material UI theming
 import { ThemeProvider } from "@material-ui/styles";
 import { Paper } from "@material-ui/core";
@@ -37,7 +37,7 @@ function App() {
   function handleThemeChange() {
     //Conditional that changes the localStorage variable and state to its opposite
     if (currentMode === "light") {
-      localStorage.setItem("theme", "dark")
+      localStorage.setItem("theme", "dark");
       setTheme("dark");
       return;
     }
@@ -79,7 +79,7 @@ function App() {
             />
             <Authenticator>
               {/*Protected component, that only the Authenticator can route to*/}
-              <Route path="/lists" component={Lists}></Route>
+              <Route path="/lists" component={DataHandler}></Route>
             </Authenticator>
           </Switch>
         </BrowserRouter>
