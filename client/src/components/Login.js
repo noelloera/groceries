@@ -101,6 +101,7 @@ class Login extends React.Component {
           })
           .catch((err) => {
             console.log(err);
+            alert("Invalid Email / Password");
             this.props.history.go(0);
           });
       }
@@ -173,7 +174,7 @@ class Login extends React.Component {
                 {this.state.option === "signup" ? (
                   <InputField
                     id="username"
-                    label="Username"
+                    label="First Name"
                     name="username"
                     type="text"
                     autoComplete="name"

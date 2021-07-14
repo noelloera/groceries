@@ -6,7 +6,8 @@ import {
   ListItemText,
   Divider,
 } from "@material-ui/core";
-
+//MaterialUI icons
+import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
 const ListedElement = (props) => {
   return (
     <div>
@@ -37,14 +38,12 @@ const ListedElement = (props) => {
         )}
 
         <ListItemText edge="start">{props.name}</ListItemText>
-        <button
+        <InfoOutlinedIcon
           onClick={(e) => {
             //Calls edit function provides event, index, list id, and id string
             this.edit(e, props.index, props.id, "item");
           }}
-        >
-          Edit Icon
-        </button>
+        />
       </ListItem>
       <Divider />
     </div>

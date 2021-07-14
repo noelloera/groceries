@@ -11,10 +11,14 @@ import {
   Button,
   List,
   CssBaseline,
+  Box,
 } from "@material-ui/core";
 //Holds styling
 import styles from "../helpers/styles.jsx";
-
+//MaterialUI icons
+import MoreVertIcon from "@material-ui/icons/MoreVert";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import SentimentSatisfiedOutlinedIcon from "@material-ui/icons/SentimentSatisfiedOutlined";
 class ContentDisplay extends React.Component {
   render() {
     const { classes } = this.props;
@@ -31,11 +35,6 @@ class ContentDisplay extends React.Component {
             className={classes.listsPaper}
           >
             <div className={classes.listsPaper}>
-              {this.props.isList ? (
-                <Typography variant="caption">
-                  Hello {this.props.username}
-                </Typography>
-              ) : null}
               <form
                 name={this.props.isList ? "listForm" : "itemForm"}
                 className={classes.form}
@@ -44,32 +43,50 @@ class ContentDisplay extends React.Component {
                   this.props.submit(e);
                 }}
               >
-                {this.props.isList ? null : (
-                  <Button
-                    onClick={(e) => {
-                      this.props.goBack(e);
+                <Box borderBottom={1.1} className={classes.topBar}>
+                  <div className={classes.item}>
+                    {this.props.isList ? (
+                      <Button>
+                        <SentimentSatisfiedOutlinedIcon />
+                        {"\u00A0"}
+                        {"\u00A0"}
+                        {this.props.username}
+                      </Button>
+                    ) : null}
+                    {this.props.isList ? null : (
+                      <Button
+                        onClick={(e) => {
+                          this.props.goBack(e);
+                        }}
+                      >
+                        <ArrowBackIcon />
+                        BACK
+                      </Button>
+                    )}
+                  </div>
+                  <div className={classes.centerItem}>
+                    <Typography variant="h1">
+                      {this.props.isList ? "My Lists" : this.props.listName}
+                    </Typography>
+                  </div>
+                  <div className={classes.rightItem}>
+                    <MoreVertIcon className={classes.item} />
+                  </div>
+                </Box>
+                <Box display="flex">
+                  <InputField
+                    label={this.props.isList ? "Add a new list" : "Add an item"}
+                    name={this.props.isList ? "listField" : "itemField"}
+                    type="text"
+                    variant="standard"
+                    value={this.props.value}
+                    required
+                    onChange={(e) => {
+                      this.props.change(e);
                     }}
-                  >
-                    BACK
-                  </Button>
-                )}
-                <Typography variant="h2">
-                  {this.props.isList ? "My Lists" : "Items"}
-                </Typography>
-                <InputField
-                  label={
-                    this.props.isList ? "Add a new list..." : "Add an item..."
-                  }
-                  name={this.props.isList ? "listField" : "itemField"}
-                  type="text"
-                  variant="standard"
-                  value={this.props.value}
-                  required
-                  onChange={(e) => {
-                    this.props.change(e);
-                  }}
-                />
-                <button>+</button>
+                  />
+                </Box>
+
                 <List>{this.props.renderAll()}</List>
               </form>
             </div>

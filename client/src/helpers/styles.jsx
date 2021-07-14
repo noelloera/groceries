@@ -78,5 +78,27 @@ const styles = (theme) => ({
       height: "83vh",
     },
   },
+  username: {
+    overflow: "hidden",
+  },
+  topBar: {
+    display: "flex",
+    width: "100%",
+    justifyContent: "space-evenly",
+    height: "3rem",
+  },
+  item: {
+    width: "33%",
+    overflow: "hidden",
+  },
+  centerItem: {
+    textAlign: "center",
+    width: "33%",
+  },
+  rightItem: {
+    width: "33%",
+
+    textAlign: "right",
+  },
 });
 export default styles;

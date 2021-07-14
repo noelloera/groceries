@@ -15,6 +15,7 @@ class DataHandler extends React.Component {
       itemField: "",
       isList: true,
       listId: null,
+      listName: "",
       listIndex: 0,
       username: null,
       lists: [],
@@ -93,6 +94,7 @@ class DataHandler extends React.Component {
       items: this.state.lists[i].items,
       listId: this.state.lists[i]._id,
       listIndex: i,
+      listName: this.state.lists[i].name,
     });
   }
   //Renders by mapping each of the existing list objects
@@ -275,6 +277,7 @@ class DataHandler extends React.Component {
     return (
       <ListsAndItems
         username={this.state.username}
+        listName={this.state.listName}
         change={this.change}
         submit={this.submit}
         goBack={this.goBack}
