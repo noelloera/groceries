@@ -6,6 +6,7 @@ import Elem from "./ListedElement.js";
 import { withRouter } from "react-router-dom";
 //Imports the items component
 import ListsAndItems from "./ContentDisplay";
+import SimpleModal from "./EditListModal";
 class DataHandler extends React.Component {
   access = getAccess();
   constructor(props) {
@@ -198,8 +199,10 @@ class DataHandler extends React.Component {
       this.props.history.push("/authenticator");
     }
   }
-  async edit(e, i, id, elemId) {
+  editModal(e) {
+    e.preventDefault();
     //conditional based on the elemId
+    return <SimpleModal />;
   }
   goBack(e) {
     e.preventDefault();
@@ -284,6 +287,7 @@ class DataHandler extends React.Component {
         value={isList ? this.state.listField : this.state.itemField}
         renderAll={this.renderAll}
         isList={this.state.isList}
+        editModal={this.editModal}
       />
     );
   }

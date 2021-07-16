@@ -41,7 +41,7 @@ const ListedElement = (props) => {
         <InfoOutlinedIcon
           onClick={(e) => {
             //Calls edit function provides event, index, list id, and id string
-            this.edit(e, props.index, props.id, "item");
+            props.editModal(e);
           }}
         />
       </ListItem>
