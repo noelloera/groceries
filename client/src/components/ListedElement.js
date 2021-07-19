@@ -38,12 +38,14 @@ const ListedElement = (props) => {
         )}
 
         <ListItemText edge="start">{props.name}</ListItemText>
-        <InfoOutlinedIcon
-          onClick={(e) => {
-            //Calls edit function provides event, index, list id, and id string
-            props.editModal(e);
-          }}
-        />
+        {props.isList ? (
+          <InfoOutlinedIcon
+            onClick={(e) => {
+              //Calls edit function provides event, index, list id, and id string
+              props.editModal(e);
+            }}
+          />
+        ) : null}
       </ListItem>
       <Divider />
     </div>
