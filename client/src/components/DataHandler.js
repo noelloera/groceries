@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { getAccess, clearAccess } from "../helpers/jwt";
-import Elem from "./ListedElement.js";
+import ListedElement from "./ListedElement.js";
 //React Router
 import { withRouter } from "react-router-dom";
 //Imports the items component
@@ -14,6 +14,8 @@ class DataHandler extends React.Component {
     this.state = {
       listField: "",
       itemField: "",
+      currentList: "",
+      currentItem: "",
       isList: true,
       listId: null,
       listName: "",
@@ -29,6 +31,7 @@ class DataHandler extends React.Component {
     this.change = this.change.bind(this);
     this.submit = this.submit.bind(this);
     this.goBack = this.goBack.bind(this);
+    this.changeItem = this.changeItem.bind(this);
   }
   //Helper function uses locally stored tokens to make secure axios calls
   async getLists() {
@@ -87,15 +90,25 @@ class DataHandler extends React.Component {
     }
   }
   //Sets the listId to the current index of the list object
-  listClick(e, i) {
+  async listClick(e, i) {
     e.preventDefault();
+    let items = [...this.state.lists[i].items];
     //Sets the items to the current items
     this.setState({
       isList: false,
-      items: this.state.lists[i].items,
+      items: items,
       listId: this.state.lists[i]._id,
       listIndex: i,
       listName: this.state.lists[i].name,
+    });
+  }
+  changeItem(e, i) {
+    let items = [...this.state.items];
+    let item = items[i];
+    item.value = e.target.value;
+    items[i] = item;
+    this.setState({
+      items: items,
     });
   }
   //Renders by mapping each of the existing list objects
@@ -104,12 +117,14 @@ class DataHandler extends React.Component {
     const type = isList ? this.state.lists : this.state.items;
     return type.map((item, i) => {
       return (
-        <Elem
+        <ListedElement
           id={item._id}
           index={i}
           name={isList ? item.name : item.value}
           onClick={isList ? this.listClick : this.itemClick}
           isList={this.state.isList}
+          value={isList ? item.name : this.state.items[i].value}
+          onChange={isList ? null : this.changeItem}
         />
       );
     });

@@ -5,6 +5,7 @@ import {
   Checkbox,
   ListItemText,
   Divider,
+  TextField,
 } from "@material-ui/core";
 //MaterialUI icons
 import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
@@ -36,8 +37,16 @@ const ListedElement = (props) => {
             />
           </ListItemIcon>
         )}
-
-        <ListItemText edge="start">{props.name}</ListItemText>
+        {props.isList ? (
+          <ListItemText edge="start">{props.value}</ListItemText>
+        ) : (
+          <TextField
+            value={props.value}
+            onChange={(e) => {
+              props.onChange(e, props.index);
+            }}
+          />
+        )}
         {props.isList ? (
           <InfoOutlinedIcon
             onClick={(e) => {
