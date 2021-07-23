@@ -98,7 +98,7 @@ router.put("/lists/", auth, (req, res) => {
               .status(422)
               .send({ message: "unable to delete: request error " });
           }
-          res.status(202).send({ message: "deleted the list" });
+          res.status(201).send({ message: "deleted the list" });
         }
       );
     } else {
@@ -115,17 +115,21 @@ router.put("/lists/:listId", auth, (req, res) => {
     const id = req.params.listId;
     //New Items
     const items = req.body.items;
+    const itemId = req.body.itemId;
     if (itemId !== "" && id !== "") {
       User.updateOne(
         { "lists._id": id },
         { $set: { "lists.$.items": items } },
         (err) => {
           if (err) {
-            res
-              .status(422)
-              .send({ message: "unable to delete: request error " });
+            res.status(422).send({
+              message: "unable to delete: request error ",
+            });
           }
-          res.status(204).send({ message: "updated list" });
+          res.status(201).send({
+            newItems: items,
+            message: "updated list",
+          });
         }
       );
     } else {

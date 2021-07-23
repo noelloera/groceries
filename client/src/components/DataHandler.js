@@ -81,6 +81,7 @@ class DataHandler extends React.Component {
       });
     }
     //Updates if the items changed
+
     if (this.state.items !== prevState.items) {
       await this.getLists().then((data) => {
         this.setState({
@@ -103,9 +104,10 @@ class DataHandler extends React.Component {
     });
   }
   changeItem(e, i) {
+    e.preventDefault();
     let items = [...this.state.items];
     let item = items[i];
-    item.value = e.target.value;
+    item.value = e.target.value.slice(0);
     items[i] = item;
     this.setState({
       items: items,
@@ -121,10 +123,11 @@ class DataHandler extends React.Component {
           id={item._id}
           index={i}
           name={isList ? item.name : item.value}
-          onClick={isList ? this.listClick : this.itemClick}
+          click={isList ? this.listClick : this.itemClick}
           isList={this.state.isList}
           value={isList ? item.name : this.state.items[i].value}
           onChange={isList ? null : this.changeItem}
+          submit={isList ? null : this.submit}
         />
       );
     });
@@ -137,8 +140,9 @@ class DataHandler extends React.Component {
     });
   }
   //Both new lists & items work, find a way to not refresh each time
-  async submit(e) {
+  async submit(e, i) {
     e.preventDefault();
+    console.log(e.target.name);
     const name = e.target.name;
     const access = getAccess();
     if (access) {
@@ -177,6 +181,7 @@ class DataHandler extends React.Component {
       if (name === "itemForm") {
         //Gets string from the item input field
         const itemValue = this.state.itemField.slice(0);
+
         //Sends itemValue in a post request
         await axios
           .post(
@@ -209,6 +214,44 @@ class DataHandler extends React.Component {
             this.props.history.push("/login");
           });
       }
+
+      //itemEdit
+      if (name === "itemEdit") {
+        let items = [...this.state.items];
+        let item = items[i];
+        let itemValue = item.value;
+        if (itemValue !== "" && itemValue) {
+          const edittedItems = [...this.state.items];
+          await axios
+            .put(
+              `/lists/${this.state.listId}`,
+              { items: edittedItems, itemId: item._id },
+              { headers: { Authorization: `Bearer ${access}` } }
+            )
+            .then(async (res) => {
+              const newItems = res.data.newItems;
+              //Makes copy of existing lists in state
+              const lists = [...this.state.lists];
+              //In the copy, goes to current listIndex and overrides its items with the newItems
+              lists[this.state.listIndex].items = newItems;
+              this.setState({
+                lists: lists,
+                items: newItems,
+                currentItem: itemValue,
+              });
+              this.props.history.push("/lists");
+            })
+            .catch((err) => {
+              console.log(err);
+              clearAccess();
+              this.props.history.push("/login");
+            });
+        }
+        if (itemValue === "" || itemValue === " ") {
+          this.itemClick(e, i, item._id);
+        }
+      }
+      //listEdit
     } else {
       //If there is no access token user pushed to the authenticator component
       this.props.history.push("/authenticator");
@@ -217,6 +260,7 @@ class DataHandler extends React.Component {
   editModal(e) {
     e.preventDefault();
     //conditional based on the elemId
+
     return <SimpleModal />;
   }
   goBack(e) {

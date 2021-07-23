@@ -11,7 +11,12 @@ import {
 import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
 const ListedElement = (props) => {
   return (
-    <div>
+    <form
+      name={props.isList ? null : "itemEdit"}
+      onSubmit={(e) => {
+        props.submit(e, props.index);
+      }}
+    >
       <ListItem
         role={undefined}
         button
@@ -20,7 +25,7 @@ const ListedElement = (props) => {
         name={props.name}
         onClick={(e) => {
           if (props.isList) {
-            props.onClick(e, props.index);
+            props.click(e, props.index);
           }
           return;
         }}
@@ -32,7 +37,7 @@ const ListedElement = (props) => {
               tabIndex={-1}
               checked={props.index === -1}
               onChange={(e) => {
-                props.onClick(e, props.index, props.id);
+                props.click(e, props.index, props.id);
               }}
             />
           </ListItemIcon>
@@ -57,7 +62,7 @@ const ListedElement = (props) => {
         ) : null}
       </ListItem>
       <Divider />
-    </div>
+    </form>
   );
 };
 
