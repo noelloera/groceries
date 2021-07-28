@@ -1,21 +1,11 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
+//MaterialUI Icon
+import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
+import DeleteIcon from "@material-ui/icons/Delete";
 
-function rand() {
-  return Math.round(Math.random() * 20) - 10;
-}
-
-function getModalStyle() {
-  const top = 50 + rand();
-  const left = 50 + rand();
-
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`,
-  };
-}
+import { Box, Button, Divider, TextField, Typography } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -23,18 +13,22 @@ const useStyles = makeStyles((theme) => ({
     width: 400,
     backgroundColor: theme.palette.background.paper,
     border: "2px solid #000",
-    boxShadow: theme.shadows[5],
+    boxShadow: theme.shadows[10],
     padding: theme.spacing(2, 4, 3),
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    zIndex: 10,
   },
 }));
 
-export default function SimpleModal() {
+const EditListModal = (props) => {
   const classes = useStyles();
   // getModalStyle is not a pure function, we roll the style only on the first render
-  const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
 
   const handleOpen = () => {
+    props.setCurrent(props.value);
     setOpen(true);
   };
 
@@ -42,21 +36,61 @@ export default function SimpleModal() {
     setOpen(false);
   };
 
+  //Contents of the displayed modal
   const body = (
-    <div style={modalStyle} className={classes.paper}>
-      <h2 id="simple-modal-title">Text in a modal</h2>
-      <p id="simple-modal-description">
-        Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-      </p>
-      <SimpleModal />
+    <div className={classes.paper}>
+      <form
+        name="listEdit"
+        onSubmit={(e) => {
+          props.onSubmit(e, props.index, props.id);
+          handleClose();
+        }}
+      >
+        <Box borderBottom={1.1} display="flex" justifyContent="space-between">
+          <Button
+            color="primary"
+            onClick={(e) => {
+              e.preventDefault();
+              handleClose();
+            }}
+          >
+            Cancel
+          </Button>
+          <Typography>{props.value} Details</Typography>
+          <Button type="submit" color="primary">
+            Done
+          </Button>
+        </Box>
+        <Box pt={2} display="flex" width="100%" justifyContent="center">
+          <TextField
+            fullWidth
+            className={classes.TextField}
+            name="currentList"
+            onChange={(e) => {
+              props.onChange(e, props.index);
+            }}
+            value={props.currentList}
+          />
+        </Box>
+      </form>
+      <Divider />
+      <form
+        onSubmit={(e) => {
+          props.delete(e, props.index, props.id);
+        }}
+      >
+        <Box pt={2} display="flex" alignItems="center" justifyContent="center">
+          <Button type="submit" color="secondary" startIcon={<DeleteIcon />}>
+            Delete List
+          </Button>
+        </Box>
+      </form>
     </div>
   );
 
   return (
     <div>
-      <button type="button" onClick={handleOpen}>
-        Open Modal
-      </button>
+      <InfoOutlinedIcon color="primary" type="button" onClick={handleOpen} />
       <Modal
         open={open}
         onClose={handleClose}
@@ -67,4 +101,5 @@ export default function SimpleModal() {
       </Modal>
     </div>
   );
-}
+};
+export default EditListModal;

@@ -7,63 +7,81 @@ import {
   Divider,
   TextField,
 } from "@material-ui/core";
-//MaterialUI icons
-import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
+
+//Styling
+import { withStyles } from "@material-ui/core/styles";
+import styles from "../helpers/styles.jsx";
+//Components
+import EditListModal from "./EditListModal.js";
+
 const ListedElement = (props) => {
   return (
-    <form
-      name={props.isList ? null : "itemEdit"}
-      onSubmit={(e) => {
-        props.submit(e, props.index);
-      }}
-    >
-      <ListItem
-        role={undefined}
-        button
-        id={props.id}
-        key={props.id}
-        name={props.name}
-        onClick={(e) => {
-          if (props.isList) {
-            props.click(e, props.index);
-          }
-          return;
+    <div>
+      {/*Conditional values based on isList prop*/}
+      <form
+        name={props.isList ? null : "itemEdit"}
+        onSubmit={(e) => {
+          props.submit(e, props.index);
         }}
       >
-        {props.isList ? null : (
-          <ListItemIcon>
-            <Checkbox
+        <ListItem role={undefined} button id={props.id} key={props.id}>
+          {/*If isList, no component rendered, else Checkbox for items*/}
+          {props.isList ? null : (
+            <ListItemIcon style={{ margin: 0, padding: 0 }}>
+              <Checkbox
+                style={{ margin: 0, padding: 0 }}
+                edge="start"
+                tabIndex={-1}
+                checked={props.index === -1}
+                onChange={(e) => {
+                  props.click(e, props.index, props.id);
+                }}
+              />
+            </ListItemIcon>
+          )}
+          {/*If isList true only text displayed, else then textfield */}
+          {props.isList ? (
+            <ListItemText
+              onClick={(e) => {
+                if (props.isList) {
+                  props.click(e, props.index);
+                }
+                return;
+              }}
               edge="start"
-              tabIndex={-1}
-              checked={props.index === -1}
+            >
+              {props.value.slice(0)}
+            </ListItemText>
+          ) : (
+            <TextField
+              fullWidth
+              name="currentItem"
+              value={props.value}
               onChange={(e) => {
-                props.click(e, props.index, props.id);
+                props.onChange(e, props.index);
               }}
             />
-          </ListItemIcon>
-        )}
-        {props.isList ? (
-          <ListItemText edge="start">{props.value}</ListItemText>
-        ) : (
-          <TextField
-            value={props.value}
-            onChange={(e) => {
-              props.onChange(e, props.index);
-            }}
-          />
-        )}
-        {props.isList ? (
-          <InfoOutlinedIcon
-            onClick={(e) => {
-              //Calls edit function provides event, index, list id, and id string
-              props.editModal(e);
-            }}
-          />
-        ) : null}
-      </ListItem>
-      <Divider />
-    </form>
+          )}
+
+          {/*If isList EditModal component displayed, else no component*/}
+          {props.isList ? (
+            <EditListModal
+              id={props.id}
+              name="currentList"
+              index={props.index}
+              value={props.value}
+              currentList={props.currentList}
+              onChange={props.onChange}
+              setCurrent={props.setCurrent}
+              onSubmit={props.submit}
+              delete={props.delete}
+            />
+          ) : null}
+        </ListItem>
+      </form>
+      {props.isList ? <Divider /> : null}
+    </div>
   );
 };
 
-export default ListedElement;
+export default withStyles(styles, { withTheme: true })(ListedElement);

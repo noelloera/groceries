@@ -100,5 +100,12 @@ const styles = (theme) => ({
 
     textAlign: "right",
   },
+  listedElement: {
+    display: "flex",
+    width: "100%",
+  },
+  textField: {
+    width: "100%",
+  },
 });
 export default styles;

@@ -6,7 +6,6 @@ import ListedElement from "./ListedElement.js";
 import { withRouter } from "react-router-dom";
 //Imports the items component
 import ListsAndItems from "./ContentDisplay";
-import SimpleModal from "./EditListModal";
 class DataHandler extends React.Component {
   access = getAccess();
   constructor(props) {
@@ -14,8 +13,6 @@ class DataHandler extends React.Component {
     this.state = {
       listField: "",
       itemField: "",
-      currentList: "",
-      currentItem: "",
       isList: true,
       listId: null,
       listName: "",
@@ -23,6 +20,7 @@ class DataHandler extends React.Component {
       username: null,
       lists: [],
       items: [],
+      listNames: [],
     };
     this.getLists = this.getLists.bind(this);
     this.itemClick = this.itemClick.bind(this);
@@ -32,6 +30,9 @@ class DataHandler extends React.Component {
     this.submit = this.submit.bind(this);
     this.goBack = this.goBack.bind(this);
     this.changeItem = this.changeItem.bind(this);
+    this.changeList = this.changeList.bind(this);
+    this.setCurrent = this.setCurrent.bind(this);
+    this.listDelete = this.listDelete.bind(this);
   }
   //Helper function uses locally stored tokens to make secure axios calls
   async getLists() {
@@ -103,6 +104,36 @@ class DataHandler extends React.Component {
       listName: this.state.lists[i].name,
     });
   }
+  //Sends delete request for specific item _id
+  async itemClick(e, i, id) {
+    e.preventDefault();
+    if (this.state.listId && id) {
+      await axios
+        .delete("/lists/" + this.state.listId, {
+          headers: { Authorization: `Bearer ${this.access}` },
+          data: { itemId: id },
+        })
+        .then(async (res) => {
+          //Makes copy of existing lists in state
+          const lists = [...this.state.lists];
+          //Makes copy of existing items in that list
+          const items = lists[this.state.listIndex].items;
+          //Deletes the item at the specific item index
+          items.splice(i, 1);
+          //Overrides the copied indexed lists items
+          lists[this.state.listIndex].items = items;
+          //Sets the state to reflect the changes in lists and items
+          this.setState({
+            lists: lists,
+            items: items,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          alert(err);
+        });
+    }
+  }
   changeItem(e, i) {
     e.preventDefault();
     let items = [...this.state.items];
@@ -113,26 +144,37 @@ class DataHandler extends React.Component {
       items: items,
     });
   }
+  changeList(e, i) {
+    this.setState({
+      currentList: e.target.value.slice(0),
+    });
+  }
+  setCurrent(value) {
+    this.setState({
+      currentList: value,
+    });
+  }
   //Renders by mapping each of the existing list objects
   renderAll() {
     const isList = this.state.isList;
-    const type = isList ? this.state.lists : this.state.items;
+    const type = isList ? [...this.state.lists] : [...this.state.items];
     return type.map((item, i) => {
       return (
         <ListedElement
           id={item._id}
           index={i}
-          name={isList ? item.name : item.value}
           click={isList ? this.listClick : this.itemClick}
           isList={this.state.isList}
           value={isList ? item.name : this.state.items[i].value}
-          onChange={isList ? null : this.changeItem}
-          submit={isList ? null : this.submit}
+          currentList={isList ? this.state.currentList : null}
+          onChange={isList ? this.changeList : this.changeItem}
+          submit={this.submit}
+          setCurrent={isList ? this.setCurrent : null}
+          delete={isList ? this.listDelete : null}
         />
       );
     });
   }
-
   //Sets the state by the name of the field
   change(e) {
     this.setState({
@@ -140,9 +182,8 @@ class DataHandler extends React.Component {
     });
   }
   //Both new lists & items work, find a way to not refresh each time
-  async submit(e, i) {
+  async submit(e, i, id) {
     e.preventDefault();
-    console.log(e.target.name);
     const name = e.target.name;
     const access = getAccess();
     if (access) {
@@ -252,16 +293,42 @@ class DataHandler extends React.Component {
         }
       }
       //listEdit
+      if (name === "listEdit") {
+        const newListName = this.state.currentList.slice(0);
+        if (newListName !== "" && newListName && id) {
+          await axios
+            .put(
+              `/lists/`,
+              { listId: id, listName: newListName },
+              { headers: { Authorization: `Bearer ${access}` } }
+            )
+            .then(async (res) => {
+              const lists = [...this.state.lists];
+              const list = this.state.lists[i];
+              list.name = newListName;
+              lists[i] = list;
+              //In the copy, goes to current listIndex and overrides its items with the newItems
+              this.setState({
+                lists: lists,
+                currentList: "",
+              });
+              this.props.history.push("/lists");
+            })
+            .catch((err) => {
+              console.log(err);
+              clearAccess();
+              this.props.history.push("/login");
+            });
+        }
+        if (newListName === "" || newListName === " ") {
+          alert("Cant change the list name to an empty value");
+          return;
+        }
+      }
     } else {
       //If there is no access token user pushed to the authenticator component
       this.props.history.push("/authenticator");
     }
-  }
-  editModal(e) {
-    e.preventDefault();
-    //conditional based on the elemId
-
-    return <SimpleModal />;
   }
   goBack(e) {
     e.preventDefault();
@@ -269,38 +336,9 @@ class DataHandler extends React.Component {
       isList: true,
     });
   }
-  //Sends delete request for specific item _id
-  async itemClick(e, i, id) {
-    e.preventDefault();
-    if (this.state.listId && id) {
-      await axios
-        .delete("/lists/" + this.state.listId, {
-          headers: { Authorization: `Bearer ${this.access}` },
-          data: { itemId: id },
-        })
-        .then(async (res) => {
-          //Makes copy of existing lists in state
-          const lists = [...this.state.lists];
-          //Makes copy of existing items in that list
-          const items = lists[this.state.listIndex].items;
-          //Deletes the item at the specific item index
-          items.splice(i, 1);
-          //Overrides the copied indexed lists items
-          lists[this.state.listIndex].items = items;
-          //Sets the state to reflect the changes in lists and items
-          this.setState({
-            lists: lists,
-            items: items,
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-          alert(err);
-        });
-    }
-  }
+
   //Sends delete request for specific list _id
-  async listDelete(e, id, i) {
+  async listDelete(e, i, id) {
     e.preventDefault();
     if (i && id) {
       await axios
@@ -327,7 +365,9 @@ class DataHandler extends React.Component {
         })
         .catch((err) => {
           console.log(err);
+          clearAccess();
           alert(err);
+          this.props.history.push("/login");
         });
     }
   }

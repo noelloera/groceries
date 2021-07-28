@@ -1,4 +1,4 @@
-import { createMuiTheme } from "@material-ui/core";
+import { createTheme } from "@material-ui/core";
 //import desired fonts
 import "typeface-almarai";
 //Uncomment when you need to use the theme props
@@ -7,7 +7,6 @@ import "typeface-almarai";
 const theme = {
   palette: {
     primary: { main: "#ff5722", contrastText: "#ffffff" },
-    secondary: { main: "#fff", contrastText: "#ffffff" },
     background: {
       default: "#000000",
     },
@@ -30,14 +29,14 @@ const theme = {
   },
 };
 //Specifies a dark palette, takes in theme as parameter
-const darkTheme = createMuiTheme(
+const darkTheme = createTheme(
   {
     palette: { type: "dark" },
   },
   theme
 );
 //Specifies a light palette, takes in theme as parameter
-const lightTheme = createMuiTheme(
+const lightTheme = createTheme(
   {
     palette: { type: "light" },
   },
