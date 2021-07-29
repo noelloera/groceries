@@ -7,12 +7,14 @@ import {
   clearRefresh,
 } from "../helpers/jwt.js";
 import axios from "axios";
+import DataHandler from "./DataHandler.js";
 
 class Authenticator extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       authenticated: false,
+      data: {},
     };
     this.newAccess = this.newAccess.bind(this);
   }
@@ -51,7 +53,7 @@ class Authenticator extends React.Component {
         .get("/me", { headers: { Authorization: `Bearer ${access}` } })
         .then((res) => {
           if (res.status === 200) {
-            this.setState({ authenticated: true });
+            this.setState({ authenticated: true, data: res.data });
             this.props.history.push("/lists");
           }
         })
@@ -69,7 +71,11 @@ class Authenticator extends React.Component {
   }
   render() {
     if (this.state.authenticated) {
-      return <div>{this.props.children}</div>;
+      return (
+        <div>
+          <DataHandler data={this.state.data} />
+        </div>
+      );
     }
     return <div> loading </div>;
   }

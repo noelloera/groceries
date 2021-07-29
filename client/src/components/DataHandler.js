@@ -10,19 +10,19 @@ class DataHandler extends React.Component {
   access = getAccess();
   constructor(props) {
     super(props);
+    let data = this.props.data;
     this.state = {
       listField: "",
       itemField: "",
       isList: true,
-      listId: null,
+      listId: data ? data.lists[0]._id : null,
       listName: "",
       listIndex: 0,
-      username: null,
-      lists: [],
-      items: [],
-      listNames: [],
+      username: data.username,
+      lists: data ? data.lists : [],
+      items: data ? data.lists[0].items : [],
     };
-    this.getLists = this.getLists.bind(this);
+    this.getData = this.getData.bind(this);
     this.itemClick = this.itemClick.bind(this);
     this.listClick = this.listClick.bind(this);
     this.renderAll = this.renderAll.bind(this);
@@ -34,63 +34,45 @@ class DataHandler extends React.Component {
     this.setCurrent = this.setCurrent.bind(this);
     this.listDelete = this.listDelete.bind(this);
   }
-  //Helper function uses locally stored tokens to make secure axios calls
-  async getLists() {
-    //Makes a get request to server for user data
-    return await axios
-      .get("/me", { headers: { Authorization: `Bearer ${this.access}` } })
+
+  getData() {
+    const access = getAccess();
+    axios
+      .get("/me", { headers: { Authorization: `Bearer ${access}` } })
       .then((res) => {
-        return res.data;
+        let data = res.data;
+        let lists = [...this.state.lists];
+        console.log(data.lists.length);
+        console.log(lists.length);
+        if (data.lists.length !== lists.length) {
+          this.setState({
+            lists: data.lists,
+          });
+        } else {
+          return;
+        }
       })
       .catch((err) => {
         console.log(err);
-        if (!this.state.username) {
-          clearAccess();
-          this.props.history.push("/login");
-        }
       });
   }
-  //Runs getLists function asynchroniously
-  async componentDidMount() {
-    //Calls getLists and sets state
-    await this.getLists().then((data) => {
-      //Ternary operator if lists already exist
-      data.lists.length
-        ? //If there is existing lists, they are set to the state
-          this.setState({
-            username: data.username,
-            listId: data.lists[0]._id,
-            listIndex: 0,
-            lists: data.lists,
-            items: data.lists[0].items,
-          })
-        : //Else there is no lists and only the username sets, and list index is 0
-          this.setState({
-            username: data.username,
-            listIndex: 0,
-          });
-    });
+
+  componentDidMount() {
+    setInterval(this.getData, 10000);
   }
   //Will update the state with new data
+  /*
   async componentDidUpdate(prevProps, prevState) {
     //Should also update the items in the current chosen list like listClick
-    if (this.state.lists.length !== prevState.lists.length) {
-      await this.getLists().then((data) => {
-        this.setState({
-          lists: this.state.lists,
-        });
+    if (
+      this.state.lists.length !== prevState.lists.length ||
+      this.state.items.length !== prevState.items.length
+    ) {
+      this.getData().then((data) => {
+        console.log(data);
       });
     }
-    //Updates if the items changed
-
-    if (this.state.items !== prevState.items) {
-      await this.getLists().then((data) => {
-        this.setState({
-          lists: this.state.lists,
-        });
-      });
-    }
-  }
+  }*/
   //Sets the listId to the current index of the list object
   async listClick(e, i) {
     e.preventDefault();
