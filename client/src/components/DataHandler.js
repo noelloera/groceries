@@ -42,11 +42,26 @@ class DataHandler extends React.Component {
       .then((res) => {
         let data = res.data;
         let lists = [...this.state.lists];
-        console.log(data.lists.length);
-        console.log(lists.length);
+        /*
+        res.data.lists.forEach((list) => {
+          [...this.state.lists].forEach((stateList) => {
+            if (list.name === stateList.name) {
+              return;
+            }
+            if (list.name !== stateList.name) {
+              console.log("theres a difference");
+            }
+          });
+        });*/
+        for (let i = 0; i < lists.length; i++) {
+          for (let j = 0; j < lists[i].items.length; j++) {
+            //Should compare each of the lists > items .lengths and update if need be
+          }
+        }
         if (data.lists.length !== lists.length) {
           this.setState({
             lists: data.lists,
+            items: data.lists[this.state.listIndex].items,
           });
         } else {
           return;
@@ -58,7 +73,7 @@ class DataHandler extends React.Component {
   }
 
   componentDidMount() {
-    setInterval(this.getData, 10000);
+    setInterval(this.getData, 6000);
   }
   //Will update the state with new data
   /*
