@@ -5,7 +5,8 @@ import ListedElement from "./ListedElement.js";
 //React Router
 import { withRouter } from "react-router-dom";
 //Imports the items component
-import ListsAndItems from "./ContentDisplay";
+import ContentDisplay from "./ContentDisplay";
+import { Typography, Box } from "@material-ui/core";
 class DataHandler extends React.Component {
   access = getAccess();
   constructor(props) {
@@ -15,12 +16,12 @@ class DataHandler extends React.Component {
       listField: "",
       itemField: "",
       isList: true,
-      listId: data ? data.lists[0]._id : null,
+      listId: "",
       listName: "",
       listIndex: 0,
       username: data.username,
       lists: data ? data.lists : [],
-      items: data ? data.lists[0].items : [],
+      items: [],
     };
     this.getData = this.getData.bind(this);
     this.itemClick = this.itemClick.bind(this);
@@ -160,22 +161,30 @@ class DataHandler extends React.Component {
   renderAll() {
     const isList = this.state.isList;
     const type = isList ? [...this.state.lists] : [...this.state.items];
-    return type.map((item, i) => {
-      return (
-        <ListedElement
-          id={item._id}
-          index={i}
-          click={isList ? this.listClick : this.itemClick}
-          isList={this.state.isList}
-          value={isList ? item.name : this.state.items[i].value}
-          currentList={isList ? this.state.currentList : null}
-          onChange={isList ? this.changeList : this.changeItem}
-          submit={this.submit}
-          setCurrent={isList ? this.setCurrent : null}
-          delete={isList ? this.listDelete : null}
-        />
-      );
-    });
+    return type.length ? (
+      type.map((item, i) => {
+        return (
+          <ListedElement
+            id={item._id}
+            index={i}
+            click={isList ? this.listClick : this.itemClick}
+            isList={this.state.isList}
+            value={isList ? item.name : this.state.items[i].value}
+            currentList={isList ? this.state.currentList : null}
+            onChange={isList ? this.changeList : this.changeItem}
+            submit={this.submit}
+            setCurrent={isList ? this.setCurrent : null}
+            delete={isList ? this.listDelete : null}
+          />
+        );
+      })
+    ) : (
+      <Box justifyContent="center">
+        <Typography>
+          There are no {isList ? "lists" : "items"} to display{" "}
+        </Typography>
+      </Box>
+    );
   }
   //Sets the state by the name of the field
   change(e) {
@@ -379,7 +388,7 @@ class DataHandler extends React.Component {
   render() {
     const isList = this.state.isList;
     return (
-      <ListsAndItems
+      <ContentDisplay
         username={this.state.username}
         listName={this.state.listName}
         change={this.change}
