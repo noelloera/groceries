@@ -107,7 +107,6 @@ class Login extends React.Component {
       }
       if (option === "signup") {
         //Makes axios request to signup route
-
         axios
           .post("/signup", {
             email: email,

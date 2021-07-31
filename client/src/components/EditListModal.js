@@ -8,17 +8,21 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import { Box, Button, Divider, TextField, Typography } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
+  listIcon: {
+    cursor: "pointer",
+  },
   paper: {
     position: "absolute",
     width: 400,
     backgroundColor: theme.palette.background.paper,
-    border: "2px solid #000",
     boxShadow: theme.shadows[10],
+    borderRadius: "1em",
     padding: theme.spacing(2, 4, 3),
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
     zIndex: 10,
+    outline: 0,
   },
 }));
 
@@ -46,7 +50,12 @@ const EditListModal = (props) => {
           handleClose();
         }}
       >
-        <Box borderBottom={1.1} display="flex" justifyContent="space-between">
+        <Box
+          borderBottom={1.1}
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+        >
           <Button
             color="primary"
             onClick={(e) => {
@@ -90,7 +99,12 @@ const EditListModal = (props) => {
 
   return (
     <div>
-      <InfoOutlinedIcon color="primary" type="button" onClick={handleOpen} />
+      <InfoOutlinedIcon
+        className={classes.listIcon}
+        color="primary"
+        type="button"
+        onClick={handleOpen}
+      />
       <Modal
         open={open}
         onClose={handleClose}

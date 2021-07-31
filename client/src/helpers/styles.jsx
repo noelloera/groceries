@@ -97,10 +97,9 @@ const styles = (theme) => ({
   },
   rightItem: {
     width: "33%",
-
     textAlign: "right",
   },
-  listedElement: {
+  listItem: {
     display: "flex",
     width: "100%",
   },

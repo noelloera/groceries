@@ -42,21 +42,26 @@ class DataHandler extends React.Component {
       .then((res) => {
         let data = res.data;
         let lists = [...this.state.lists];
-        /*
-        res.data.lists.forEach((list) => {
-          [...this.state.lists].forEach((stateList) => {
-            if (list.name === stateList.name) {
-              return;
-            }
-            if (list.name !== stateList.name) {
-              console.log("theres a difference");
-            }
-          });
-        });*/
+        //Stringifies all items in the state
+        let currentListItems = "";
         for (let i = 0; i < lists.length; i++) {
           for (let j = 0; j < lists[i].items.length; j++) {
-            //Should compare each of the lists > items .lengths and update if need be
+            currentListItems += JSON.stringify(lists[i].items);
           }
+        }
+        //Stringifies all items in the response data
+        let responseListItems = "";
+        for (let i = 0; i < data.lists.length; i++) {
+          for (let j = 0; j < data.lists[i].items.length; j++) {
+            responseListItems += JSON.stringify(data.lists[i].items);
+          }
+        }
+        if (currentListItems !== responseListItems) {
+          console.log("difference in items");
+          this.setState({
+            lists: data.lists,
+            items: data.lists[this.state.listIndex].items,
+          });
         }
         if (data.lists.length !== lists.length) {
           this.setState({
@@ -73,7 +78,7 @@ class DataHandler extends React.Component {
   }
 
   componentDidMount() {
-    setInterval(this.getData, 6000);
+    setInterval(this.getData, 120000);
   }
   //Will update the state with new data
   /*

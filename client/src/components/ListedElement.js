@@ -11,20 +11,35 @@ import {
 //Styling
 import { withStyles } from "@material-ui/core/styles";
 import styles from "../helpers/styles.jsx";
+import PropTypes from "prop-types";
 //Components
 import EditListModal from "./EditListModal.js";
 
 const ListedElement = (props) => {
+  const { classes } = props;
   return (
-    <div>
+    <div className={classes.test}>
       {/*Conditional values based on isList prop*/}
       <form
+        style={{ display: "flex" }}
+        className={classes.listItem}
         name={props.isList ? null : "itemEdit"}
         onSubmit={(e) => {
           props.submit(e, props.index);
         }}
       >
-        <ListItem role={undefined} button id={props.id} key={props.id}>
+        <ListItem
+          role={undefined}
+          button
+          id={props.id}
+          key={props.id}
+          onClick={(e) => {
+            if (props.isList) {
+              props.click(e, props.index);
+            }
+            return;
+          }}
+        >
           {/*If isList, no component rendered, else Checkbox for items*/}
           {props.isList ? null : (
             <ListItemIcon style={{ margin: 0, padding: 0 }}>
@@ -41,17 +56,7 @@ const ListedElement = (props) => {
           )}
           {/*If isList true only text displayed, else then textfield */}
           {props.isList ? (
-            <ListItemText
-              onClick={(e) => {
-                if (props.isList) {
-                  props.click(e, props.index);
-                }
-                return;
-              }}
-              edge="start"
-            >
-              {props.value.slice(0)}
-            </ListItemText>
+            <ListItemText edge="start">{props.value.slice(0)}</ListItemText>
           ) : (
             <TextField
               fullWidth
@@ -62,26 +67,28 @@ const ListedElement = (props) => {
               }}
             />
           )}
-
-          {/*If isList EditModal component displayed, else no component*/}
-          {props.isList ? (
-            <EditListModal
-              id={props.id}
-              name="currentList"
-              index={props.index}
-              value={props.value}
-              currentList={props.currentList}
-              onChange={props.onChange}
-              setCurrent={props.setCurrent}
-              onSubmit={props.submit}
-              delete={props.delete}
-            />
-          ) : null}
         </ListItem>
+        {/*If isList EditModal component displayed, else no component*/}
+        {props.isList ? (
+          <EditListModal
+            id={props.id}
+            name="currentList"
+            index={props.index}
+            value={props.value}
+            currentList={props.currentList}
+            onChange={props.onChange}
+            setCurrent={props.setCurrent}
+            onSubmit={props.submit}
+            delete={props.delete}
+          />
+        ) : null}
       </form>
       {props.isList ? <Divider /> : null}
     </div>
   );
+};
+ListedElement.propTypes = {
+  classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles, { withTheme: true })(ListedElement);
