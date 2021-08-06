@@ -6,7 +6,7 @@ import ListedElement from "./ListedElement.js";
 import { withRouter } from "react-router-dom";
 //Imports the items component
 import ContentDisplay from "./ContentDisplay";
-import { Typography, Box } from "@material-ui/core";
+import { Typography, Box, ListItemAvatar } from "@material-ui/core";
 class DataHandler extends React.Component {
   access = getAccess();
   constructor(props) {
@@ -351,7 +351,7 @@ class DataHandler extends React.Component {
   //Sends delete request for specific list _id
   async listDelete(e, i, id) {
     e.preventDefault();
-    if (i && id) {
+    if ((i && id) || (i == 0 && id)) {
       await axios
         .delete("/lists/", {
           headers: { Authorization: `Bearer ${this.access}` },
@@ -359,14 +359,15 @@ class DataHandler extends React.Component {
         })
         .then(async (res) => {
           //Makes copy of existing lists in state
-          const lists = [...this.state.lists];
+          let lists = [...this.state.lists];
           //Deletes the list at the provided index
           lists.splice(i, 1);
           //Makes sure the new list index is not less than 0
           let newIndex = i - 1;
           if (newIndex < 0) newIndex = 0;
           //Overrides the copied indexed lists items
-          const items = lists[newIndex].items;
+          lists = lists ? lists : [];
+          let items = lists[newIndex].items ? lists[newIndex].items : [];
           //Sets the state to reflect the changes in lists and items
           this.setState({
             lists: lists,

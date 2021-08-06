@@ -6,7 +6,7 @@ import "typeface-almarai";
 //Theme holds all app styling configurations
 const theme = {
   palette: {
-    primary: { main: "#ff5722", contrastText: "#ffffff" },
+    primary: { main: "#fd6f20", contrastText: "#ffffff" },
     background: {
       default: "#000000",
     },

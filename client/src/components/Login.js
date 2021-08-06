@@ -20,6 +20,9 @@ import {
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Switch from "@material-ui/core/Switch";
+//Logo
+import GroceriesLogo from "../assets/grocerieslogo.png";
+
 //withStyles takes in styles, and higher order component as arguments
 import { withStyles } from "@material-ui/core/styles";
 import styles from "../helpers/styles.jsx";
@@ -158,9 +161,7 @@ class Login extends React.Component {
             <div className={classes.paper}>
               {/*Icon */}
               <Typography variant="h1">groceries</Typography>
-              <Avatar className={classes.avatar}>
-                <LockOutlinedIcon />
-              </Avatar>
+              <img src={GroceriesLogo} className={classes.avatar} />
               <Typography component="h1" variant="h5">
                 {this.state.option === "login" ? "login" : "signup"}
               </Typography>

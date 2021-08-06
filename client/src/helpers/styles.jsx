@@ -49,8 +49,9 @@ const styles = (theme) => ({
     },
   },
   avatar: {
+    width: "4em",
+    height: "4em",
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.primary.main,
   },
   form: {
     width: "100%",

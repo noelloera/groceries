@@ -89,7 +89,14 @@ const EditListModal = (props) => {
         }}
       >
         <Box pt={2} display="flex" alignItems="center" justifyContent="center">
-          <Button type="submit" color="secondary" startIcon={<DeleteIcon />}>
+          <Button
+            color="secondary"
+            onClick={(e) => {
+              props.delete(e, props.index, props.id);
+              handleClose();
+            }}
+            startIcon={<DeleteIcon />}
+          >
             Delete List
           </Button>
         </Box>
