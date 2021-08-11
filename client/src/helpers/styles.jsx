@@ -4,9 +4,14 @@ const styles = (theme) => ({
   app: {
     background: "rgba(0,0,0)",
     height: "100vh",
+    overflow: "hidden",
+    [theme.breakpoints.down("md")]: {
+      height: "87vh",
+    },
   },
   //Login edits entirety including the image in desktop
   content: {
+    overflow: "hidden",
     background: "rgba(0,0,0)",
     height: "100vh",
     display: "flex",
@@ -35,13 +40,13 @@ const styles = (theme) => ({
   },
   //Paper edits the actual form
   paper: {
+    overflow: "hidden",
     height: "95vh",
     padding: "1rem",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     borderRadius: "1em",
-    overflow: "scroll",
     //Sets the maximum resolutions for larger devices
     maxHeight: "1000px",
     [theme.breakpoints.down("sm")]: {
@@ -67,13 +72,12 @@ const styles = (theme) => ({
   //SplashScreen
 
   //DisplayedContent
-  listsPaper: {
+  contentDisplay: {
     height: "95vh",
-    padding: "1rem",
+    padding: "2rem",
     display: "flex",
     flexDirection: "column",
     borderRadius: "1em",
-    overflow: "scroll",
     //Sets the maximum resolutions for larger devices
     maxWidth: "600px",
     maxHeight: "1000px",
@@ -94,6 +98,10 @@ const styles = (theme) => ({
     width: "33%",
     overflow: "hidden",
   },
+  syncIcon: {
+    width: "33%",
+    cursor: "pointer",
+  },
   centerItem: {
     textAlign: "center",
     width: "33%",
@@ -105,9 +113,31 @@ const styles = (theme) => ({
   listItem: {
     display: "flex",
     width: "100%",
+    alignItems: "center",
   },
   textField: {
     width: "100%",
+  },
+  allListed: {
+    overflow: "scroll",
+    height: "90%",
+  },
+  //Edit Modal
+  listIcon: {
+    cursor: "pointer",
+  },
+  editModal: {
+    position: "absolute",
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[10],
+    borderRadius: "1em",
+    padding: theme.spacing(2, 4, 3),
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    zIndex: 10,
+    outline: 0,
   },
 });
 export default styles;

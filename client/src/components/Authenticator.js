@@ -77,7 +77,11 @@ class Authenticator extends React.Component {
   }
   render() {
     return this.state.authenticated ? (
-      <DataHandler data={this.state.data} />
+      <DataHandler
+        checked={this.props.checked}
+        change={this.props.change}
+        data={this.state.data}
+      />
     ) : (
       <SplashScreen
         displaySplash={this.state.displaySplash}

@@ -391,6 +391,9 @@ class DataHandler extends React.Component {
         renderAll={this.renderAll}
         isList={this.state.isList}
         editModal={this.editModal}
+        switchChecked={this.props.checked}
+        switchChange={this.props.change}
+        refresh={this.getData}
       />
     );
   }

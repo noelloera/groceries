@@ -1,33 +1,23 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Modal from "@material-ui/core/Modal";
+//Material UI Styling
+import { withStyles } from "@material-ui/core/styles";
+import styles from "../helpers/styles.jsx";
+import PropTypes from "prop-types";
 //MaterialUI Icon
 import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
 import DeleteIcon from "@material-ui/icons/Delete";
 
-import { Box, Button, Divider, TextField, Typography } from "@material-ui/core";
-
-const useStyles = makeStyles((theme) => ({
-  listIcon: {
-    cursor: "pointer",
-  },
-  paper: {
-    position: "absolute",
-    width: 400,
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[10],
-    borderRadius: "1em",
-    padding: theme.spacing(2, 4, 3),
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    zIndex: 10,
-    outline: 0,
-  },
-}));
+import {
+  Box,
+  Button,
+  Divider,
+  TextField,
+  Typography,
+  Modal,
+} from "@material-ui/core";
 
 const EditListModal = (props) => {
-  const classes = useStyles();
+  const { classes } = props;
   // getModalStyle is not a pure function, we roll the style only on the first render
   const [open, setOpen] = React.useState(false);
 
@@ -42,7 +32,7 @@ const EditListModal = (props) => {
 
   //Contents of the displayed modal
   const body = (
-    <div className={classes.paper}>
+    <div className={classes.editModal}>
       <form
         name="listEdit"
         onSubmit={(e) => {
@@ -123,4 +113,8 @@ const EditListModal = (props) => {
     </div>
   );
 };
-export default EditListModal;
+EditListModal.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+//Wraps Component with Material UI stylying
+export default withStyles(styles)(EditListModal);

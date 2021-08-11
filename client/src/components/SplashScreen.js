@@ -1,4 +1,4 @@
-import { Typography, Grid } from "@material-ui/core";
+import { Typography, Grid, CssBaseline } from "@material-ui/core";
 import BeatLoader from "react-spinners/BeatLoader";
 import GroceriesLogo from "../assets/splashlogo.png";
 //withStyles takes in styles, and higher order component as arguments
@@ -21,44 +21,53 @@ const SplashScreen = (props) => {
       if (!props.displaySplash) {
         setLoading(false);
       }
-    }, 1000);
+    }, 500);
   }, [props]);
   return (
-    <Grid container className={classes.content}>
+    <div>
       {loading ? (
-        <Grid
-          item
-          xs={12}
-          sm={8}
-          md={11}
-          lg={11}
-          xl={11}
-          direction="column"
-          alignItems="center"
-          justify="center"
-          className={classes.paper}
-          style={{ backgroundColor: "#fd6f20" }}
-        >
-          <Grid item>
-            <Typography variant="h1" style={{ color: "#ffffff" }}>
-              groceries
-            </Typography>
-          </Grid>
-          <Grid item>
-            <img
-              src={GroceriesLogo}
-              className={classes.avatar}
-              alt="groceries application splashscreen logo"
-            />
-          </Grid>
-          <Grid item>
-            <BeatLoader color="white" loading={loading} size={9} />
-          </Grid>
+        <Grid container className={classes.content}>
+          <CssBaseline>
+            <Grid
+              item
+              xs={12}
+              sm={8}
+              md={11}
+              lg={11}
+              xl={11}
+              className={classes.paper}
+              style={{ backgroundColor: "#fd6f20" }}
+            >
+              <Grid
+                container
+                direction="column"
+                justifyContent="center"
+                alignItems="center"
+                style={{ height: "100%", maxHeight: "83vh" }}
+              >
+                <Grid item>
+                  <Typography variant="h1" style={{ color: "#ffffff" }}>
+                    groceries
+                  </Typography>
+                </Grid>
+                <Grid item>
+                  <img
+                    src={GroceriesLogo}
+                    className={classes.avatar}
+                    alt="groceries application splashscreen logo"
+                  />
+                </Grid>
+                <Grid item>
+                  <BeatLoader color="white" loading={loading} size={9} />
+                </Grid>
+              </Grid>
+            </Grid>
+          </CssBaseline>
         </Grid>
       ) : (
         props.children
       )}
-    </Grid>
+    </div>
   );
 };
 SplashScreen.propTypes = {

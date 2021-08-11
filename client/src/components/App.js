@@ -4,7 +4,6 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 //import SplashScreen from "./SplashScreen/SplashScreen.js";
 import Login from "./Login";
 import Authenticator from "./Authenticator.js";
-import DataHandler from "./DataHandler";
 //Material UI theming
 import { ThemeProvider } from "@material-ui/styles";
 import { Paper } from "@material-ui/core";
@@ -69,7 +68,8 @@ function App(props) {
               path={["/", "/login"]}
               exact
               render={(props) => (
-                <SplashScreen>
+                <div>
+                  <SplashScreen />
                   <Login
                     {...props}
                     checked={checked()}
@@ -77,13 +77,20 @@ function App(props) {
                       handleThemeChange();
                     }}
                   />
-                </SplashScreen>
+                </div>
               )}
             />
-            <Authenticator>
-              {/*Protected component, that only the Authenticator can route to*/}
-              <Route path="/lists" component={DataHandler}></Route>
-            </Authenticator>
+            <Route
+              render={(props) => (
+                <Authenticator
+                  {...props}
+                  checked={checked()}
+                  change={() => {
+                    handleThemeChange();
+                  }}
+                />
+              )}
+            />
           </Switch>
         </BrowserRouter>
       </Paper>

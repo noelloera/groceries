@@ -20,7 +20,9 @@ import {
 import Switch from "@material-ui/core/Switch";
 //Logo
 import GroceriesLogo from "../assets/grocerieslogo.png";
-//AnimateOnChange
+//Icons
+import WbSunnyIcon from "@material-ui/icons/WbSunny";
+import Brightness3Icon from "@material-ui/icons/Brightness3";
 //withStyles takes in styles, and higher order component as arguments
 import { withStyles } from "@material-ui/core/styles";
 import styles from "../helpers/styles.jsx";
@@ -229,7 +231,7 @@ class Login extends React.Component {
                 >
                   {this.state.option === "login" ? "Login" : "Sign Up"}
                 </Button>
-                <Grid container justify="space-between">
+                <Grid container>
                   <Grid item xs>
                     <Link href="#">
                       <Typography color="primary" variant="caption">
@@ -240,7 +242,6 @@ class Login extends React.Component {
                   <Grid
                     item
                     xs
-                    justify="flex-end"
                     onClick={(e) => {
                       e.preventDefault();
                       this.option(e);
@@ -249,7 +250,6 @@ class Login extends React.Component {
                     {this.state.option === "login" ? (
                       <Link href="#">
                         <Typography
-                          inline
                           color="primary"
                           variant="caption"
                           className={classes.option}
@@ -274,19 +274,21 @@ class Login extends React.Component {
                 {/*Adds a Box container to set the top margin*/}
                 <Box mt={1}>
                   {/*Grid container sets the items layout */}
-                  <Grid container>
-                    <Grid item xs>
-                      <Typography>
-                        {this.props.checked ? "Light " : "Dark "} Mode?
-                      </Typography>
-                    </Grid>
-                    <Grid item>
-                      <Switch
-                        checked={this.props.checked}
-                        onChange={this.props.change}
-                      />
-                    </Grid>
-                  </Grid>
+                  <Box
+                    pt={3}
+                    pb={2}
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <WbSunnyIcon />
+                    <Switch
+                      color="primary"
+                      checked={this.props.checked}
+                      onChange={this.props.change}
+                    />
+                    <Brightness3Icon />
+                  </Box>
                   <Copyright />
                 </Box>
               </form>
