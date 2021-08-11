@@ -6,7 +6,7 @@ import ListedElement from "./ListedElement.js";
 import { withRouter } from "react-router-dom";
 //Imports the items component
 import ContentDisplay from "./ContentDisplay";
-import { Typography, Box, ListItemAvatar } from "@material-ui/core";
+import { Typography, Box } from "@material-ui/core";
 class DataHandler extends React.Component {
   access = getAccess();
   constructor(props) {
@@ -61,13 +61,17 @@ class DataHandler extends React.Component {
           console.log("difference in items");
           this.setState({
             lists: data.lists,
-            items: data.lists[this.state.listIndex].items,
+            items: data.lists[this.state.listIndex].items
+              ? data.lists[this.state.listIndex].items
+              : [],
           });
         }
         if (data.lists.length !== lists.length) {
           this.setState({
             lists: data.lists,
-            items: data.lists[this.state.listIndex].items,
+            items: data.lists[this.state.listIndex].items
+              ? data.lists[this.state.listIndex].items
+              : [],
           });
         } else {
           return;
@@ -81,19 +85,7 @@ class DataHandler extends React.Component {
   componentDidMount() {
     setInterval(this.getData, 120000);
   }
-  //Will update the state with new data
-  /*
-  async componentDidUpdate(prevProps, prevState) {
-    //Should also update the items in the current chosen list like listClick
-    if (
-      this.state.lists.length !== prevState.lists.length ||
-      this.state.items.length !== prevState.items.length
-    ) {
-      this.getData().then((data) => {
-        console.log(data);
-      });
-    }
-  }*/
+
   //Sets the listId to the current index of the list object
   async listClick(e, i) {
     e.preventDefault();
@@ -101,7 +93,7 @@ class DataHandler extends React.Component {
     //Sets the items to the current items
     this.setState({
       isList: false,
-      items: items,
+      items: items ? items : [],
       listId: this.state.lists[i]._id,
       listIndex: i,
       listName: this.state.lists[i].name,
@@ -128,7 +120,7 @@ class DataHandler extends React.Component {
           //Sets the state to reflect the changes in lists and items
           this.setState({
             lists: lists,
-            items: items,
+            items: items ? items : [],
           });
         })
         .catch((err) => {
@@ -165,6 +157,7 @@ class DataHandler extends React.Component {
       type.map((item, i) => {
         return (
           <ListedElement
+            key={isList ? `L${item._id}` : `I${item._id}`}
             id={item._id}
             index={i}
             click={isList ? this.listClick : this.itemClick}
@@ -351,7 +344,7 @@ class DataHandler extends React.Component {
   //Sends delete request for specific list _id
   async listDelete(e, i, id) {
     e.preventDefault();
-    if ((i && id) || (i == 0 && id)) {
+    if ((i && id) || (i === 0 && id)) {
       await axios
         .delete("/lists/", {
           headers: { Authorization: `Bearer ${this.access}` },
@@ -367,18 +360,17 @@ class DataHandler extends React.Component {
           if (newIndex < 0) newIndex = 0;
           //Overrides the copied indexed lists items
           lists = lists ? lists : [];
-          let items = lists[newIndex].items ? lists[newIndex].items : [];
           //Sets the state to reflect the changes in lists and items
           this.setState({
             lists: lists,
             listIndex: newIndex,
-            items: items,
+            items: [],
           });
         })
         .catch((err) => {
           console.log(err);
           clearAccess();
-          alert(err);
+          alert("delete" + err);
           this.props.history.push("/login");
         });
     }

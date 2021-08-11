@@ -18,7 +18,7 @@ import EditListModal from "./EditListModal.js";
 const ListedElement = (props) => {
   const { classes } = props;
   return (
-    <div className={classes.test}>
+    <div className={classes.test} key={props.id}>
       {/*Conditional values based on isList prop*/}
       <form
         style={{ display: "flex" }}
@@ -32,7 +32,6 @@ const ListedElement = (props) => {
           role={undefined}
           button
           id={props.id}
-          key={props.id}
           onClick={(e) => {
             if (props.isList) {
               props.click(e, props.index);

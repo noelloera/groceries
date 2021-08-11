@@ -14,15 +14,13 @@ import {
   Paper,
   Grid,
   Link,
-  Avatar,
   FormControlLabel,
   Checkbox,
 } from "@material-ui/core";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Switch from "@material-ui/core/Switch";
 //Logo
 import GroceriesLogo from "../assets/grocerieslogo.png";
-
+//AnimateOnChange
 //withStyles takes in styles, and higher order component as arguments
 import { withStyles } from "@material-ui/core/styles";
 import styles from "../helpers/styles.jsx";
@@ -161,7 +159,11 @@ class Login extends React.Component {
             <div className={classes.paper}>
               {/*Icon */}
               <Typography variant="h1">groceries</Typography>
-              <img src={GroceriesLogo} className={classes.avatar} />
+              <img
+                src={GroceriesLogo}
+                className={classes.avatar}
+                alt="groceries application login logo"
+              />
               <Typography component="h1" variant="h5">
                 {this.state.option === "login" ? "login" : "signup"}
               </Typography>

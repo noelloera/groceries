@@ -15,7 +15,7 @@ const theme = {
     fontFamily: "Almarai",
     //Logo Typography
     h1: {
-      fontSize: "1.8em",
+      fontSize: "1.5em",
       fontWeight: 600,
     },
     h2: {

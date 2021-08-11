@@ -1,9 +1,13 @@
 import groceriesImg from "../assets/groceries.jpg";
 //All of the component styling goes here
 const styles = (theme) => ({
+  app: {
+    background: "rgba(0,0,0)",
+    height: "100vh",
+  },
   //Login edits entirety including the image in desktop
   content: {
-    background: "rgba(0,0,0,1)",
+    background: "rgba(0,0,0)",
     height: "100vh",
     display: "flex",
     justifyContent: "center",
@@ -24,9 +28,7 @@ const styles = (theme) => ({
     backgroundPosition: "center",
     borderRadius: "1em",
     //Sets the maximum resolutions for larger devices
-    maxWidth: "600px",
     maxHeight: "1000px",
-
     [theme.breakpoints.down("sm")]: {
       display: "none",
     },
@@ -41,9 +43,7 @@ const styles = (theme) => ({
     borderRadius: "1em",
     overflow: "scroll",
     //Sets the maximum resolutions for larger devices
-    maxWidth: "600px",
     maxHeight: "1000px",
-
     [theme.breakpoints.down("sm")]: {
       height: "83vh",
     },
@@ -64,7 +64,9 @@ const styles = (theme) => ({
     float: "right",
     textAlign: "right",
   },
+  //SplashScreen
 
+  //DisplayedContent
   listsPaper: {
     height: "95vh",
     padding: "1rem",

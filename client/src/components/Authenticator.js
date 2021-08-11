@@ -8,15 +8,18 @@ import {
 } from "../helpers/jwt.js";
 import axios from "axios";
 import DataHandler from "./DataHandler.js";
+import SplashScreen from "./SplashScreen.js";
 
 class Authenticator extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       authenticated: false,
+      displaySplash: true,
       data: {},
     };
     this.newAccess = this.newAccess.bind(this);
+    this.authenticate = this.authenticate.bind(this);
   }
   //Will check if refreshe exists and is valid
   async newAccess(refresh) {
@@ -53,7 +56,7 @@ class Authenticator extends React.Component {
         .get("/me", { headers: { Authorization: `Bearer ${access}` } })
         .then((res) => {
           if (res.status === 200) {
-            this.setState({ authenticated: true, data: res.data });
+            this.setState({ displaySplash: false, data: res.data });
             this.props.history.push("/lists");
           }
         })
@@ -69,15 +72,18 @@ class Authenticator extends React.Component {
       this.props.history.push("/login");
     }
   }
+  authenticate() {
+    this.setState({ authenticated: true });
+  }
   render() {
-    if (this.state.authenticated) {
-      return (
-        <div>
-          <DataHandler data={this.state.data} />
-        </div>
-      );
-    }
-    return <div> loading </div>;
+    return this.state.authenticated ? (
+      <DataHandler data={this.state.data} />
+    ) : (
+      <SplashScreen
+        displaySplash={this.state.displaySplash}
+        authenticate={this.authenticate}
+      />
+    );
   }
 }
 

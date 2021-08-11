@@ -13,13 +13,14 @@ import { darkTheme, lightTheme } from "../helpers/themes.js";
 
 import styles from "../helpers/styles";
 import PropTypes from "prop-types";
+import SplashScreen from "./SplashScreen";
 
-function App() {
+function App(props) {
   //useState needs an array of declarations, the second is a function that sets the first
   const [currentMode, setTheme] = useState("light");
   //Calls external useStyles function
   //const classes = useStyles();
-  const classes = styles;
+  const { classes } = props;
   //Will run before render and set the localStorage
   useEffect(() => {
     //Will retrieve saved localStorage variable if exists
@@ -68,13 +69,15 @@ function App() {
               path={["/", "/login"]}
               exact
               render={(props) => (
-                <Login
-                  {...props}
-                  checked={checked()}
-                  change={() => {
-                    handleThemeChange();
-                  }}
-                />
+                <SplashScreen>
+                  <Login
+                    {...props}
+                    checked={checked()}
+                    change={() => {
+                      handleThemeChange();
+                    }}
+                  />
+                </SplashScreen>
               )}
             />
             <Authenticator>
