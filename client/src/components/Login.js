@@ -1,4 +1,4 @@
-import { getRefresh } from "../helpers/jwt";
+import { getRefresh, rme } from "../helpers/jwt";
 import React from "react";
 import axios from "axios";
 import InputField from "./InputField";
@@ -51,12 +51,14 @@ class Login extends React.Component {
       password: "",
       username: "",
       option: "login",
+      rememberMe: true,
     };
   }
   //Uses jwt.js helper functions to get locally stored access & refresh if exists
   componentDidMount() {
     const access = getRefresh();
     const refresh = getRefresh();
+    if (!rme()) localStorage.setItem("rme", true);
     //If both exists, Authenticator handles
     if (access && refresh) {
       this.props.history.push("/Authenticator/");
@@ -117,13 +119,20 @@ class Login extends React.Component {
             username: username,
           })
           .then((res) => {
-            localStorage.setItem("access", res.data.access);
-            localStorage.setItem("refresh", res.data.refresh);
-            this.props.history.push("/lists");
+            if (res.status === 201) {
+              localStorage.setItem("access", res.data.access);
+              localStorage.setItem("refresh", res.data.refresh);
+              if (this.state.rememberMe) localStorage.setItem("rme", true);
+              this.props.history.push("/lists");
+            } else {
+              alert("An account with that email already exists");
+              this.props.history.go(0);
+            }
           })
           .catch((err) => {
-            console.log(err);
-            this.props.history.go(0);
+            if (err.response.status === 400) {
+              alert("An account with that email already exists");
+            }
           });
       }
     } else {
@@ -170,6 +179,7 @@ class Login extends React.Component {
                 {this.state.option === "login" ? "login" : "signup"}
               </Typography>
               <form
+                action="#"
                 className={classes.form}
                 onSubmit={(e) => {
                   this.submit(e);
@@ -220,7 +230,18 @@ class Login extends React.Component {
                   }}
                 ></InputField>
                 <FormControlLabel
-                  control={<Checkbox value="remember" color="primary" />}
+                  control={
+                    <Checkbox
+                      value="rememberMe"
+                      color="primary"
+                      checked={this.state.rememberMe}
+                      onClick={(e) => {
+                        let remember = !this.state.rememberMe;
+                        this.setState({ rememberMe: remember });
+                        localStorage.setItem("rme", remember);
+                      }}
+                    />
+                  }
                   label="Remember me"
                 />
                 <Button

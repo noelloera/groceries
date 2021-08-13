@@ -26,27 +26,30 @@ router.post(
     }
     let { email, password, username } = req.body;
     try {
+      email = email.toLowerCase();
       let user = await User.findOne({ email });
       if (user) {
         res.status(400).send({ message: "user already exists" });
       }
-      //Capitalizes the username
-      username = username.charAt(0).toUpperCase() + username.slice(1);
-      user = new User({
-        email,
-        password,
-        username,
-      });
-      const salt = await bcrypt.genSalt(10);
-      user.password = await bcrypt.hash(password, salt);
-      await user.save();
-      const payload = {
-        id: user.id,
-      };
-      const access = getAccessToken(payload);
-      const refresh = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET);
-      //Logic needs to register refresh tokens to database and ensure that upon signout that token doesnt work anymore
-      res.status(201).send({ refresh: refresh, access: access });
+      if (!user) {
+        //Capitalizes the username
+        username = username.charAt(0).toUpperCase() + username.slice(1);
+        user = new User({
+          email,
+          password,
+          username,
+        });
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(password, salt);
+        await user.save();
+        const payload = {
+          id: user.id,
+        };
+        const access = getAccessToken(payload);
+        const refresh = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET);
+        //Logic needs to register refresh tokens to database and ensure that upon signout that token doesnt work anymore
+        res.status(201).send({ refresh: refresh, access: access });
+      }
     } catch (err) {
       console.log(err);
       res.status(500).send({ errors: "server error" });

@@ -68,6 +68,7 @@ class ContentDisplay extends React.Component {
             </Box>
             <Box display="flex">
               <form
+                action="#"
                 name={this.props.isList ? "listForm" : "itemForm"}
                 className={classes.form}
                 onSubmit={(e) => {

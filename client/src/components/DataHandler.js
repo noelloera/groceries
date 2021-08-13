@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import { getAccess, clearAccess } from "../helpers/jwt";
+import { getAccess, clearAccess, clearRefresh, rme } from "../helpers/jwt";
 import ListedElement from "./ListedElement.js";
 //React Router
 import { withRouter } from "react-router-dom";
@@ -34,6 +34,7 @@ class DataHandler extends React.Component {
     this.changeList = this.changeList.bind(this);
     this.setCurrent = this.setCurrent.bind(this);
     this.listDelete = this.listDelete.bind(this);
+    this.componentCleanup = this.componentCleanup.bind(this);
   }
 
   getData() {
@@ -81,9 +82,21 @@ class DataHandler extends React.Component {
         console.log(err);
       });
   }
-
   componentDidMount() {
     setInterval(this.getData, 120000);
+    window.addEventListener("beforeunload", this.componentCleanup);
+  }
+  //Component will unmount will check if the user wished to stay logged in
+  componentWillUnmount() {
+    window.removeEventListener("beforeunload", this.componentCleanup());
+  }
+  componentCleanup() {
+    if (rme() === "false") {
+      clearAccess();
+      clearRefresh();
+      localStorage.removeItem("rme");
+      window.location.reload();
+    }
   }
 
   //Sets the listId to the current index of the list object

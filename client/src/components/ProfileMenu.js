@@ -43,7 +43,7 @@ export default function ProfileMenu(props) {
         onClose={handleClose}
       >
         <MenuItem onClick={handleClose}>Hi, {props.username}</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
+        <MenuItem onClick={handleClose}>My Account</MenuItem>
         <MenuItem onClick={logOut}>Logout</MenuItem>
       </Menu>
     </div>

@@ -1,13 +1,12 @@
 const express = require("express");
 const app = express();
 const path = require("path");
-const PORT = 5000; //Should be changed to local port 
+const PORT = process.env.PORT || 5000; //Should be changed to local port
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const user = require("./routes/user.js");
 const lists = require("./routes/lists.js");
 const { connect, disconnect } = require("./database/database.js");
-
 
 app.use(
   morgan("tiny"),
@@ -20,10 +19,15 @@ connect();
 app.use(user);
 app.use(lists);
 
-app.get("/", (req, res) => {
-});
-/* This will be for the production build
-
+/* This will be for the production build*/
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join("client/build")));
+  app.get("/", (req, res) => {
+    res.status(200);
+    res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+  });
+}
+/*
 app.use(express.static(path.join(__dirname, "build")))
 
 app.get('/',(req,res)=>{
