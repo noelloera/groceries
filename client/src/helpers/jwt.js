@@ -5,10 +5,10 @@ const getRefresh = () => {
   return localStorage.getItem("refresh");
 };
 const clearAccess = () => {
-  localStorage.clear("access");
+  localStorage.removeItem("access");
 };
 const clearRefresh = () => {
-  localStorage.clear("refresh");
+  localStorage.removeItem("refresh");
 };
 
 module.exports = { getAccess, getRefresh, clearAccess, clearRefresh };

@@ -20,7 +20,7 @@ import SyncIcon from "@material-ui/icons/Sync";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import WbSunnyIcon from "@material-ui/icons/WbSunny";
 import Brightness3Icon from "@material-ui/icons/Brightness3";
-import SentimentSatisfiedOutlinedIcon from "@material-ui/icons/SentimentSatisfiedOutlined";
+import ProfileMenu from "./ProfileMenu";
 class ContentDisplay extends React.Component {
   render() {
     const { classes } = this.props;
@@ -39,12 +39,7 @@ class ContentDisplay extends React.Component {
             <Box borderBottom={1.1} className={classes.topBar}>
               <div className={classes.item}>
                 {this.props.isList ? (
-                  <Button>
-                    <SentimentSatisfiedOutlinedIcon />
-                    {"\u00A0"}
-                    {"\u00A0"}
-                    {this.props.username}
-                  </Button>
+                  <ProfileMenu username={this.props.username} />
                 ) : null}
                 {this.props.isList ? null : (
                   <Button
