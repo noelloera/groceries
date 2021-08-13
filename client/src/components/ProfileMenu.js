@@ -19,7 +19,7 @@ export default function ProfileMenu(props) {
     clearAccess();
     clearRefresh();
     handleClose();
-    window.location.reload();
+    window.location.href = "/";
   };
   return (
     <div>
