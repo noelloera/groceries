@@ -21,6 +21,7 @@ const ListedElement = (props) => {
     <div className={classes.test} key={props.id}>
       {/*Conditional values based on isList prop*/}
       <form
+        action="#"
         style={{ display: "flex" }}
         className={classes.listItem}
         name={props.isList ? null : "itemEdit"}
