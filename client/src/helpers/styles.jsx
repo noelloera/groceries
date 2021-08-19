@@ -5,6 +5,8 @@ const styles = (theme) => ({
     background: "rgba(0,0,0)",
     height: "100vh",
     overflow: "hidden",
+    maxWidth: "1480px",
+    margin: "auto",
     [theme.breakpoints.down("md")]: {
       height: "87vh",
     },
@@ -16,6 +18,7 @@ const styles = (theme) => ({
     height: "100vh",
     display: "flex",
     justifyContent: "center",
+    //maxWidth: "1480px",
     alignItems: "center",
     [theme.breakpoints.down("md")]: {
       height: "87vh",

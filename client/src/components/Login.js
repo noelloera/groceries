@@ -36,7 +36,7 @@ function Copyright() {
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
       <Link color="inherit" href="/">
-        Groceries
+        Grocerylists
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -169,7 +169,7 @@ class Login extends React.Component {
           >
             <div className={classes.paper}>
               {/*Icon */}
-              <Typography variant="h1">groceries</Typography>
+              <Typography variant="h1">grocerylists</Typography>
               <img
                 src={GroceriesLogo}
                 className={classes.avatar}

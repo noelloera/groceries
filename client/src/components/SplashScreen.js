@@ -47,7 +47,7 @@ const SplashScreen = (props) => {
               >
                 <Grid item>
                   <Typography variant="h1" style={{ color: "#ffffff" }}>
-                    groceries
+                    grocerylists
                   </Typography>
                 </Grid>
                 <Grid item>
