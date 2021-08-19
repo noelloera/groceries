@@ -169,7 +169,7 @@ class Login extends React.Component {
           >
             <div className={classes.paper}>
               {/*Icon */}
-              <Typography variant="h1">grocerylists</Typography>
+              <Typography variant="h1">grocery-lists</Typography>
               <img
                 src={GroceriesLogo}
                 className={classes.avatar}
