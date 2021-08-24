@@ -1,6 +1,6 @@
 {
-  "short_name": "groceries",
-  "name": "groceries",
+  "short_name": "grocery-lists",
+  "name": "grocery-lists",
   "icons": [
     {
       "src": "favicon.ico",
