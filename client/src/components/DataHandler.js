@@ -296,7 +296,6 @@ class DataHandler extends React.Component {
                 items: newItems,
                 currentItem: itemValue,
               });
-              this.props.history.push("/lists");
             })
             .catch((err) => {
               console.log(err);
@@ -328,7 +327,6 @@ class DataHandler extends React.Component {
                 lists: lists,
                 currentList: "",
               });
-              this.props.history.push("/lists");
             })
             .catch((err) => {
               console.log(err);

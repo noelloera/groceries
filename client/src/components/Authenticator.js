@@ -57,7 +57,6 @@ class Authenticator extends React.Component {
         .then((res) => {
           if (res.status === 200) {
             this.setState({ displaySplash: false, data: res.data });
-            this.props.history.push("/lists");
           }
         })
         .catch((err) => {

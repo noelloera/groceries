@@ -4,7 +4,6 @@ const { check, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { User, List, Item, mongoose } = require("../database/models/User.js");
-const { connect } = require("../database/database.js");
 
 //Signs the payload with the secret access token for limited time
 getAccessToken = (payload) => {
@@ -27,7 +26,6 @@ router.post(
     }
     let { email, password, username } = req.body;
     try {
-      connect();
       email = email.toLowerCase();
       let user = await User.findOne({ email });
       if (user) {
@@ -72,7 +70,6 @@ router.post(
     }
     const { email, password } = req.body;
     try {
-      connect();
       let user = await User.findOne({ email });
       if (!user) {
         res.status(400).send({ errors: "user does not exist" });

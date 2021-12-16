@@ -6,13 +6,14 @@ const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const user = require("./routes/user.js");
 const lists = require("./routes/lists.js");
-
+const { connect } = require("./database/database.js");
 app.use(
   morgan("tiny"),
   bodyParser.json(),
   bodyParser.urlencoded({ extended: false })
 );
 
+connect();
 app.use(user);
 app.use(lists);
 /* This will be for the production build*/
@@ -31,8 +32,8 @@ app.use(express.static(path.join(__dirname, "client/build")));
 app.get("/", (req, res) => {
   res.status(200);
   res.sendFile(path.join(__dirname, "client", "build", "index.html"));
-});
-*/
+});*/
+
 console.log("now listening in port... " + PORT);
 
 app.listen(PORT);

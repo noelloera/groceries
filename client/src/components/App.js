@@ -81,7 +81,6 @@ function App(props) {
               )}
             />
             <Route
-              path={["/lists"]}
               render={(props) => (
                 <Authenticator
                   {...props}
