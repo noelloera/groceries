@@ -20,7 +20,7 @@ app.use(lists);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join("client/build")));
-  app.get("/", (req, res) => {
+  app.get(["/", "/lists", "authenticator"], (req, res) => {
     res.status(200);
     res.sendFile(path.join(__dirname, "client", "build", "index.html"));
   });

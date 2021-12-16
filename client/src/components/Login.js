@@ -61,7 +61,7 @@ class Login extends React.Component {
     if (!rme()) localStorage.setItem("rme", true);
     //If both exists, Authenticator handles
     if (access && refresh) {
-      this.props.history.push("/Authenticator/");
+      this.props.history.push("/lists");
     }
   }
 
