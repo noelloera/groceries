@@ -81,9 +81,9 @@ function App(props) {
               )}
             />
             <Route
+              path={["/lists"]}
               render={(props) => (
                 <Authenticator
-                  path={["/authenticator"]}
                   {...props}
                   checked={checked()}
                   change={() => {
