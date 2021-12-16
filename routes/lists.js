@@ -3,7 +3,7 @@ const router = express.Router();
 const { User, List, Item } = require("../database/models/User.js");
 const mongoose = require("mongoose");
 const auth = require("../middleware/auth.js");
-//These requests should connect and disconnect after each call
+
 router.get("/me", auth, async (req, res) => {
   try {
     if (req.body.id) {
@@ -36,7 +36,9 @@ router.post("/lists/", auth, (req, res) => {
         { _id: req.body.id },
         { $push: { lists: newList } },
         (err, log) => {
-          if (err) res.status(422).send(err);
+          if (err) {
+            res.status(422).send(err);
+          }
           res.status(201).send({
             newList: newList,
             message: "successfully created list",
@@ -67,7 +69,9 @@ router.post("/lists/:listId", auth, (req, res) => {
         { "lists._id": id },
         { $push: { "lists.$.items": newItem } },
         (err, log) => {
-          if (err) res.status(422).send(log);
+          if (err) {
+            res.status(422).send(log);
+          }
           res.status(201).send({
             newItem: newItem,
             message: "sucessfully updated list",

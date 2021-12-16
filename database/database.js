@@ -18,6 +18,7 @@ async function connect() {
         throw error;
       });
   } catch (error) {
+    disconnect();
     console.log(error);
   }
 }
@@ -34,4 +35,4 @@ async function disconnect() {
     });
 }
 
-module.exports = { connect, disconnect };
+module.exports = { connect };

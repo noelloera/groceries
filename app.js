@@ -6,7 +6,6 @@ const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const user = require("./routes/user.js");
 const lists = require("./routes/lists.js");
-const { connect, disconnect } = require("./database/database.js");
 
 app.use(
   morgan("tiny"),
@@ -14,12 +13,10 @@ app.use(
   bodyParser.urlencoded({ extended: false })
 );
 
-connect();
-
 app.use(user);
 app.use(lists);
-
 /* This will be for the production build*/
+
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join("client/build")));
   app.get("/", (req, res) => {
@@ -27,13 +24,15 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(path.join(__dirname, "client", "build", "index.html"));
   });
 }
-/*
-app.use(express.static(path.join(__dirname, "build")))
 
-app.get('/',(req,res)=>{
-    res.status(200)
-    res.sendFile(path.join(__dirname,"./build","index.html"))
-})*/
+/* Used in Development
+app.use(express.static(path.join(__dirname, "client/build")));
+
+app.get("/", (req, res) => {
+  res.status(200);
+  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+});
+*/
 console.log("now listening in port... " + PORT);
 
 app.listen(PORT);

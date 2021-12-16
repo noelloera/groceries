@@ -239,7 +239,6 @@ class DataHandler extends React.Component {
       if (name === "itemForm") {
         //Gets string from the item input field
         const itemValue = this.state.itemField.slice(0);
-
         //Sends itemValue in a post request
         await axios
           .post(
